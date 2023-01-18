@@ -29,7 +29,3 @@ GO
 CREATE USER demakijp FROM LOGIN demakijp
 EXEC sp_addrolemember 'db_owner', demakijp
 GO
-
-CREATE USER gaulldj FROM LOGIN gaulldj
-EXEC sp_addrolemember 'db_owner', gaulldj
-GO
