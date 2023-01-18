@@ -36,8 +36,7 @@ public class Main {
     }
 
     private static void createOthersStatement() {
-        File file = new File("C:\\Users\\gaulldj\\Documents\\@School\\B2 Winter 22-23\\Databases\\" +
-                "Project\\PNXC Results_Course Data - All Results.csv");
+        File file = new File("PNXC Results_Course Data - All Results.csv");
 
         // Step 1: Go line-by-line in the results CSV and extract the proper data
         ArrayList<String> raceLevels = new ArrayList<>();
@@ -118,10 +117,8 @@ public class Main {
         }
     }
     private static void createCourseStatement() throws IOException {
-        File file = new File("C:\\Users\\gaulldj\\Documents\\@School\\B2 Winter 22-23\\Databases\\" +
-                "Project\\PNXC Results_Course Data - All Results.csv");
-        Writer fileWriter = new FileWriter("C:\\Users\\gaulldj\\Documents\\@School\\B2 Winter 22-23\\" +
-                    "Databases\\Project\\course_script.sql", false);
+        File file = new File("PNXC Results_Course Data - All Results.csv");
+        Writer fileWriter = new FileWriter("course_script.sql", false);
         ArrayList<String> lines = new ArrayList<>();
         lines.add("USE [TeamXCDB]");
         lines.add("GO");
@@ -159,8 +156,7 @@ public class Main {
     private static void createOthersFile(ArrayList<Athlete> athletes, ArrayList<Meet> meets,
                                          ArrayList<Race> races, ArrayList<Result> results) throws IOException {
         ArrayList<String> lines = new ArrayList<>();
-        Writer fileWriter = new FileWriter("C:\\Users\\gaulldj\\Documents\\@School\\B2 Winter 22-23\\" +
-                "Databases\\Project\\other_insert_script.sql", false);
+        Writer fileWriter = new FileWriter("other_insert_script.sql", false);
         lines.add("USE [TeamXCDB]");
         lines.add("GO");
         lines.add("");
@@ -168,13 +164,25 @@ public class Main {
         lines.add("INSERT INTO Athlete(first_name, last_name, grad_year, gender)");
         lines.add("VALUES (");
         for (int i = 0; i < athletes.size(); i++) {
-            lines.add("\t('" + athletes.get(i).firstName + "', '" + athletes.get(i).lastName +
-                    "', " + athletes.get(i).gradYear + ", 'M')");
+            String line = "\t('" + athletes.get(i).firstName + "', '" + athletes.get(i).lastName +
+                    "', " + athletes.get(i).gradYear + ", 'M')";
+            if (i + 1 < meets.size()) {
+                line += ",";
+            }
+            lines.add(line);
         }
         lines.add(")\n");
 
         lines.add("INSERT INTO Meet(name, year)");
         lines.add("VALUES (");
+        for (int i = 0; i < meets.size(); i++) {
+            String line = "\t('" + meets.get(i).name + "', " + meets.get(i).year + ")";
+            if (i + 1 < meets.size()) {
+                line += ",";
+            }
+            lines.add(line);
+        }
+        lines.add(")\n");
 
         for (int i = 0; i < lines.size(); i++) {
             fileWriter.write(lines.get(i) + "\n");
