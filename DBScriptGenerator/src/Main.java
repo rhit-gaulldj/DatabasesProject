@@ -89,6 +89,7 @@ public class Main {
         ArrayList<Meet> meets = new ArrayList<>();
         ArrayList<Race> races = new ArrayList<>();
         ArrayList<Result> results = new ArrayList<>();
+        ArrayList<ResultSplit> splits = new ArrayList<>();
         try {
             Scanner reader = new Scanner(file);
             reader.nextLine(); // Skip the first line
@@ -118,9 +119,9 @@ public class Main {
                     meets.add(meet);
                 }
                 // Add race if it doesn't exist
-                int meetIndex = meets.indexOf(meet);
+                int meetIndex = meets.indexOf(meet) + 1;
                 int courseIndex = Integer.parseInt(cols[2]) + 1;
-                int raceLevelIndex = raceLevels.indexOf(cols[9]);
+                int raceLevelIndex = raceLevels.indexOf(cols[9]) + 1;
                 DistUnits units = DistUnits.MILES;
                 if (cols[11].contains("K") || cols[11].contains("k")) {
                     units = DistUnits.KILOMETERS;
@@ -132,10 +133,11 @@ public class Main {
                     races.add(race);
                 }
                 // Add result (it should definitely not exist)
-                int raceIndex = races.indexOf(race);
+                int raceIndex = races.indexOf(race) + 1;
                 float time = parseTime(cols[1]);
                 Result result = new Result(time, athleteIndex, raceIndex);
                 results.add(result);
+                int resultIndex = results.size();
 
                 // Hardest part is the splits
                 // This is because some people run slow splits, so sometimes one guy's mile split
@@ -143,18 +145,61 @@ public class Main {
                 // time to decide what it is (ex. can't say "<4:30 = 800, >4:30 = mile")
                 // Additionally, some 2-mile splits appear
                 // But some people run 12:00 for 2 miles and some run 12:00 for 1 mile
-                //
+                // We'll do some work with the average of the splits for a row to determine what to do
+                // One pass to calculate the average
+                float avgTime = 0;
+                ArrayList<Float> splitTimes = new ArrayList<>();
+                ArrayList<Float> providedDists = new ArrayList<>();
+                // Iterate through the 4 columns in which splits can appear
+                for (int i = 5; i < 9; i++) {
+                    if (cols[i].length() > 0 && !cols[i].equals("?") && !cols[i].equals("N/A")) {
+                        if (cols[i].contains("(")) {
+                            float d = Float.parseFloat(
+                                    cols[i].substring(cols[i].indexOf('(') + 1, cols[i].indexOf(')')));
+                            providedDists.add(d);
+                            cols[i] = cols[i].substring(0, cols[i].indexOf('(') - 1).trim();
+                        } else {
+                            providedDists.add(-1f);
+                        }
+                        if (cols[i].charAt(0) == '[') {
+                            cols[i] = cols[i].substring(1, cols[i].length() - 1);
+                        }
+                        float t = parseTime(cols[i]);
+                        avgTime += t;
+                        splitTimes.add(t);
+                    }
+                }
+                avgTime /= splitTimes.size();
+                // Second pass to create the splits
+                for (int i = 0; i < splitTimes.size(); i++) {
+                    // If 1.5x average or higher, then say it's a 2 mile
+                    // If 0.75x average or lower, then say it's a half mile
+                    // Otherwise, a mile split
+                    float thisTime = splitTimes.get(i);
+                    float dist = 1;
+                    if (providedDists.get(i) > 0) {
+                        dist = providedDists.get(i);
+                    } else {
+                        if (thisTime <= 0.75f * avgTime) {
+                            dist = 0.5f;
+                        } else if (thisTime >= 1.5f * avgTime) {
+                            dist = 2;
+                        }
+                    }
+                    ResultSplit split = new ResultSplit(resultIndex, i, thisTime, dist, DistUnits.MILES);
+                    splits.add(split);
+                }
             }
             reader.close();
             System.out.println();
-            createOthersFile(athletes, meets, races, results, raceLevels);
+            createOthersFile(athletes, meets, races, results, raceLevels, splits);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
     private static void createOthersFile(ArrayList<Athlete> athletes, ArrayList<Meet> meets,
                                          ArrayList<Race> races, ArrayList<Result> results,
-                                         ArrayList<String> raceLevels) throws IOException {
+                                         ArrayList<String> raceLevels, ArrayList<ResultSplit> splits) throws IOException {
         ArrayList<String> lines = new ArrayList<>();
         Writer fileWriter = new FileWriter("other_insert_script.sql", false);
         lines.add("USE [TeamXCDB]");
@@ -214,6 +259,18 @@ public class Main {
             String line = "\t(" + results.get(i).time + ", " + results.get(i).athleteId + ", " +
                     results.get(i).raceId + ")";
             if (i + 1 < results.size()) {
+                line += ",";
+            }
+            lines.add(line);
+        }
+        lines.add(")\n");
+
+        lines.add("INSERT INTO ResultSplit(result_id, index, time, distance, distance_unit)");
+        lines.add("VALUES (");
+        for (int i = 0; i < splits.size(); i++) {
+            String line = "\t(" + splits.get(i).resultId + ", " + splits.get(i).index + ", " +
+                splits.get(i).time + ", " + splits.get(i).distance + ", '" + splits.get(i).unit.getAbbreviation() + "')";
+            if (i + 1 < splits.size()) {
                 line += ",";
             }
             lines.add(line);
@@ -350,6 +407,21 @@ class Result {
         this.time = time;
         this.athleteId = athleteId;
         this.raceId = raceId;
+    }
+}
+class ResultSplit {
+    public int resultId;
+    public int index;
+    public float time;
+    public float distance;
+    public DistUnits unit;
+
+    public ResultSplit(int resultId, int index, float time, float distance, DistUnits unit) {
+        this.resultId = resultId;
+        this.index = index;
+        this.time = time;
+        this.distance = distance;
+        this.unit = unit;
     }
 }
 
