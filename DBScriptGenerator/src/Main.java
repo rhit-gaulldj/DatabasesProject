@@ -34,6 +34,42 @@ public class Main {
             e.printStackTrace();
         }
     }
+    private static void createCourseStatement() throws IOException {
+        File file = new File("PNXC Results_Course Data - All Results.csv");
+        Writer fileWriter = new FileWriter("course_script.sql", false);
+        ArrayList<String> lines = new ArrayList<>();
+        lines.add("USE [TeamXCDB]");
+        lines.add("GO");
+        lines.add("");
+        lines.add("INSERT INTO Course(name)");
+        lines.add("VALUES (");
+        try {
+            Scanner reader = new Scanner(file);
+            reader.nextLine(); // Skip the first line
+            while (reader.hasNextLine()) {
+                String data = reader.nextLine();
+                String name = courseLineToName(data);
+                String line = "\t('" + name + "')";
+                if (reader.hasNextLine()) {
+                    line = line + ",";
+                }
+                lines.add(line);
+            }
+            reader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        lines.add(")");
+        for (int i = 0; i < lines.size(); i++) {
+            fileWriter.write(lines.get(i) + "\n");
+        }
+        fileWriter.close();
+        System.out.println("Done with courses");
+    }
+    private static String courseLineToName(String line) {
+        String[] values = line.split(",");
+        return values[2];
+    }
 
     private static void createOthersStatement() {
         File file = new File("PNXC Results_Course Data - All Results.csv");
@@ -111,50 +147,14 @@ public class Main {
             }
             reader.close();
             System.out.println();
-            createOthersFile(athletes, meets, races, results);
+            createOthersFile(athletes, meets, races, results, raceLevels);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    private static void createCourseStatement() throws IOException {
-        File file = new File("PNXC Results_Course Data - All Results.csv");
-        Writer fileWriter = new FileWriter("course_script.sql", false);
-        ArrayList<String> lines = new ArrayList<>();
-        lines.add("USE [TeamXCDB]");
-        lines.add("GO");
-        lines.add("");
-        lines.add("INSERT INTO Course(name)");
-        lines.add("VALUES (");
-        try {
-            Scanner reader = new Scanner(file);
-            reader.nextLine(); // Skip the first line
-            while (reader.hasNextLine()) {
-                String data = reader.nextLine();
-                String name = courseLineToName(data);
-                String line = "\t('" + name + "')";
-                if (reader.hasNextLine()) {
-                    line = line + ",";
-                }
-                lines.add(line);
-            }
-            reader.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        lines.add(")");
-        for (int i = 0; i < lines.size(); i++) {
-            fileWriter.write(lines.get(i) + "\n");
-        }
-        fileWriter.close();
-        System.out.println("Done with courses");
-    }
-    private static String courseLineToName(String line) {
-        String[] values = line.split(",");
-        return values[2];
-    }
-
     private static void createOthersFile(ArrayList<Athlete> athletes, ArrayList<Meet> meets,
-                                         ArrayList<Race> races, ArrayList<Result> results) throws IOException {
+                                         ArrayList<Race> races, ArrayList<Result> results,
+                                         ArrayList<String> raceLevels) throws IOException {
         ArrayList<String> lines = new ArrayList<>();
         Writer fileWriter = new FileWriter("other_insert_script.sql", false);
         lines.add("USE [TeamXCDB]");
@@ -166,7 +166,7 @@ public class Main {
         for (int i = 0; i < athletes.size(); i++) {
             String line = "\t('" + athletes.get(i).firstName + "', '" + athletes.get(i).lastName +
                     "', " + athletes.get(i).gradYear + ", 'M')";
-            if (i + 1 < meets.size()) {
+            if (i + 1 < athletes.size()) {
                 line += ",";
             }
             lines.add(line);
@@ -178,6 +178,30 @@ public class Main {
         for (int i = 0; i < meets.size(); i++) {
             String line = "\t('" + meets.get(i).name + "', " + meets.get(i).year + ")";
             if (i + 1 < meets.size()) {
+                line += ",";
+            }
+            lines.add(line);
+        }
+        lines.add(")\n");
+
+        lines.add("INSERT INTO RaceLevel(name)");
+        lines.add("VALUES (");
+        for (int i = 0; i < raceLevels.size(); i++) {
+            String line = "\t('" + raceLevels.get(i) + "')";
+            if (i + 1 < raceLevels.size()) {
+                line += ",";
+            }
+            lines.add(line);
+        }
+        lines.add(")\n");
+
+        lines.add("INSERT INTO Race(distance, distance_unit, race_level_id, meet_id, course_id)");
+        lines.add("VALUES (");
+        for (int i = 0; i < races.size(); i++) {
+            String line = "\t(" + races.get(i).distance + ", '" + races.get(i).units.getAbbreviation() +
+                    "', " + races.get(i).levelIndex + ", " + races.get(i).meetIndex + ", " +
+                    races.get(i).courseIndex + ")";
+            if (i + 1 < races.size()) {
                 line += ",";
             }
             lines.add(line);
@@ -318,7 +342,16 @@ class Result {
 }
 
 enum DistUnits {
-    MILES,
-    KILOMETERS,
-    METERS
+    MILES("mi"),
+    KILOMETERS("km"),
+    METERS("m");
+
+    String abb;
+    DistUnits(String abb) {
+        this.abb = abb;
+    }
+
+    public String getAbbreviation() {
+        return abb;
+    }
 }
