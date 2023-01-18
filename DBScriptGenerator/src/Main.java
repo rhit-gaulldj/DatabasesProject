@@ -208,6 +208,18 @@ public class Main {
         }
         lines.add(")\n");
 
+        lines.add("INSERT INTO Result(time, athlete_id, race_id)");
+        lines.add("VALUES (");
+        for (int i = 0; i < results.size(); i++) {
+            String line = "\t(" + results.get(i).time + ", " + results.get(i).athleteId + ", " +
+                    results.get(i).raceId + ")";
+            if (i + 1 < results.size()) {
+                line += ",";
+            }
+            lines.add(line);
+        }
+        lines.add(")\n");
+
         for (int i = 0; i < lines.size(); i++) {
             fileWriter.write(lines.get(i) + "\n");
         }
