@@ -20,13 +20,6 @@ public class Main {
         // -- Splits must be handled
         // -- Grade should be used w/ year to calculate grad year for the athlete
         // -- Distance can be in miles or have a unit on it which means kilometers
-        // Overall:
-        // #DONE - Must generate Athletes (get name, get grad year, default to male)
-        // #DONE - Must generate meets
-        // Must generate races
-        // We should create our own race levels table
-        // Must create results
-        // Must create result splits
         try {
             createCourseStatement();
             createOthersStatement();
@@ -35,20 +28,21 @@ public class Main {
         }
     }
     private static void createCourseStatement() throws IOException {
-        File file = new File("PNXC Results_Course Data - All Results.csv");
+        File file = new File("PNXC Results_Course Data - Course IDs.csv");
         Writer fileWriter = new FileWriter("course_script.sql", false);
         ArrayList<String> lines = new ArrayList<>();
         lines.add("USE [TeamXCDB]");
         lines.add("GO");
         lines.add("");
-        lines.add("INSERT INTO Course(name)");
-        lines.add("VALUES (");
+        lines.add("INSERT INTO Course([name])");
+        lines.add("VALUES");
         try {
             Scanner reader = new Scanner(file);
             reader.nextLine(); // Skip the first line
             while (reader.hasNextLine()) {
                 String data = reader.nextLine();
                 String name = courseLineToName(data);
+                name = name.replaceAll("'", "''");
                 String line = "\t('" + name + "')";
                 if (reader.hasNextLine()) {
                     line = line + ",";
@@ -59,7 +53,6 @@ public class Main {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        lines.add(")");
         for (int i = 0; i < lines.size(); i++) {
             fileWriter.write(lines.get(i) + "\n");
         }
@@ -106,6 +99,7 @@ public class Main {
                     }
                     cols[i] = cols[i].replaceAll("[\u200C]", "");
                     cols[i] = cols[i].trim();
+                    cols[i] = cols[i].replaceAll("'", "''");
                 }
                 // Handle adding the athlete if they don't exist
                 int athleteIndex = indexForAthlete(athletes, cols[0]);
@@ -206,8 +200,8 @@ public class Main {
         lines.add("GO");
         lines.add("");
 
-        lines.add("INSERT INTO Athlete(first_name, last_name, grad_year, gender)");
-        lines.add("VALUES (");
+        lines.add("INSERT INTO Athlete([first_name], [last_name], [grad_year], [gender])");
+        lines.add("VALUES");
         for (int i = 0; i < athletes.size(); i++) {
             String line = "\t('" + athletes.get(i).firstName + "', '" + athletes.get(i).lastName +
                     "', " + athletes.get(i).gradYear + ", 'M')";
@@ -216,10 +210,10 @@ public class Main {
             }
             lines.add(line);
         }
-        lines.add(")\n");
+        lines.add("");
 
-        lines.add("INSERT INTO Meet(name, year)");
-        lines.add("VALUES (");
+        lines.add("INSERT INTO Meet([name], [year])");
+        lines.add("VALUES");
         for (int i = 0; i < meets.size(); i++) {
             String line = "\t('" + meets.get(i).name + "', " + meets.get(i).year + ")";
             if (i + 1 < meets.size()) {
@@ -227,10 +221,10 @@ public class Main {
             }
             lines.add(line);
         }
-        lines.add(")\n");
+        lines.add("");
 
-        lines.add("INSERT INTO RaceLevel(name)");
-        lines.add("VALUES (");
+        lines.add("INSERT INTO RaceLevel([name])");
+        lines.add("VALUES");
         for (int i = 0; i < raceLevels.size(); i++) {
             String line = "\t('" + raceLevels.get(i) + "')";
             if (i + 1 < raceLevels.size()) {
@@ -238,10 +232,10 @@ public class Main {
             }
             lines.add(line);
         }
-        lines.add(")\n");
+        lines.add("");
 
-        lines.add("INSERT INTO Race(distance, distance_unit, race_level_id, meet_id, course_id)");
-        lines.add("VALUES (");
+        lines.add("INSERT INTO Race([distance], [distance_unit], [race_level_id], [meet_id], [course_id])");
+        lines.add("VALUES");
         for (int i = 0; i < races.size(); i++) {
             String line = "\t(" + races.get(i).distance + ", '" + races.get(i).units.getAbbreviation() +
                     "', " + races.get(i).levelIndex + ", " + races.get(i).meetIndex + ", " +
@@ -251,10 +245,10 @@ public class Main {
             }
             lines.add(line);
         }
-        lines.add(")\n");
+        lines.add("");
 
-        lines.add("INSERT INTO Result(time, athlete_id, race_id)");
-        lines.add("VALUES (");
+        lines.add("INSERT INTO Result([time], [athlete_id], [race_id])");
+        lines.add("VALUES");
         for (int i = 0; i < results.size(); i++) {
             String line = "\t(" + results.get(i).time + ", " + results.get(i).athleteId + ", " +
                     results.get(i).raceId + ")";
@@ -263,10 +257,10 @@ public class Main {
             }
             lines.add(line);
         }
-        lines.add(")\n");
+        lines.add("");
 
-        lines.add("INSERT INTO ResultSplit(result_id, index, time, distance, distance_unit)");
-        lines.add("VALUES (");
+        lines.add("INSERT INTO ResultSplit([result_id], [index], [time], [distance], [distance_unit])");
+        lines.add("VALUES");
         for (int i = 0; i < splits.size(); i++) {
             String line = "\t(" + splits.get(i).resultId + ", " + splits.get(i).index + ", " +
                 splits.get(i).time + ", " + splits.get(i).distance + ", '" + splits.get(i).unit.getAbbreviation() + "')";
@@ -275,7 +269,7 @@ public class Main {
             }
             lines.add(line);
         }
-        lines.add(")\n");
+        lines.add("");
 
         for (int i = 0; i < lines.size(); i++) {
             fileWriter.write(lines.get(i) + "\n");

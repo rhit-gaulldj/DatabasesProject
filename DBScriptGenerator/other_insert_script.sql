@@ -1,8 +1,8 @@
 USE [TeamXCDB]
 GO
 
-INSERT INTO Athlete(first_name, last_name, grad_year, gender)
-VALUES (
+INSERT INTO Athlete([first_name], [last_name], [grad_year], [gender])
+VALUES
 	('Evan', 'Al-Ashkar', 2023, 'M'),
 	('Evan', 'Badali', 2022, 'M'),
 	('Josh', 'Bedford', 2022, 'M'),
@@ -112,7 +112,7 @@ VALUES (
 	('Andrew', 'Mosier', 2019, 'M'),
 	('Matt', 'Mosier', 2017, 'M'),
 	('Gabe', 'Nkpe', 2017, 'M'),
-	('Kevin', 'O'Neill', 2018, 'M'),
+	('Kevin', 'O''Neill', 2018, 'M'),
 	('James', 'Suchy', 2017, 'M'),
 	('Walker', 'Wells', 2017, 'M'),
 	('Patrick', 'Willhalm', 2017, 'M'),
@@ -125,7 +125,7 @@ VALUES (
 	('Elias', 'Kassa', 2018, 'M'),
 	('Andy', 'Macis', 2018, 'M'),
 	('Brenden', 'McGath', 2016, 'M'),
-	('Aaron', 'O'Keefe', 2018, 'M'),
+	('Aaron', 'O''Keefe', 2018, 'M'),
 	('Ethan', 'Patel', 2019, 'M'),
 	('Jack', 'Sebok', 2016, 'M'),
 	('Daniel', 'Soto', 2019, 'M'),
@@ -138,7 +138,7 @@ VALUES (
 	('Jake', 'Epley', 2015, 'M'),
 	('Adrian', 'Flores', 2016, 'M'),
 	('Daniel', 'Gibson', 2016, 'M'),
-	('Ethan', 'O'Keefe', 2018, 'M'),
+	('Ethan', 'O''Keefe', 2018, 'M'),
 	('Alberto', 'Ornelas', 2016, 'M'),
 	('AJ', 'Peal', 2017, 'M'),
 	('Tommy', 'Richards', 2015, 'M'),
@@ -251,10 +251,9 @@ VALUES (
 	('Matt', 'Mora', 2010, 'M'),
 	('Kevin', 'Rogel', 2008, 'M'),
 	('Antonio', 'Sciddurlo', 2008, 'M')
-)
 
-INSERT INTO Meet(name, year)
-VALUES (
+INSERT INTO Meet([name], [year])
+VALUES
 	('Plainfield North v Oswego East', 2020),
 	('Plainfield North @ Yorkville', 2020),
 	('Plainfield North v Oswego', 2020),
@@ -450,10 +449,9 @@ VALUES (
 	('Minooka Flight Invite', 2006),
 	('Joliet Steelman Invite', 2006),
 	('IHSA Sectionals', 2006)
-)
 
-INSERT INTO RaceLevel(name)
-VALUES (
+INSERT INTO RaceLevel([name])
+VALUES
 	('F/S'),
 	('Freshman'),
 	('JV'),
@@ -462,10 +460,9 @@ VALUES (
 	('Sophomore'),
 	('Time Trial'),
 	('Varsity')
-)
 
-INSERT INTO Race(distance, distance_unit, race_level_id, meet_id, course_id)
-VALUES (
+INSERT INTO Race([distance], [distance_unit], [race_level_id], [meet_id], [course_id])
+VALUES
 	(3.0, 'mi', 1, 1, 37),
 	(3.0, 'mi', 1, 2, 38),
 	(3.0, 'mi', 3, 3, 37),
@@ -805,10 +802,9 @@ VALUES (
 	(3.0, 'mi', 4, 193, 4),
 	(2.0, 'mi', 4, 194, 4),
 	(3.0, 'mi', 8, 195, 33)
-)
 
-INSERT INTO Result(time, athlete_id, race_id)
-VALUES (
+INSERT INTO Result([time], [athlete_id], [race_id])
+VALUES
 	(1149.0, 0, 1),
 	(1151.0, 0, 2),
 	(1192.0, 0, 3),
@@ -5082,10 +5078,9 @@ VALUES (
 	(1368.0, 219, 333),
 	(1427.0, 219, 337),
 	(1645.0, 219, 335)
-)
 
-INSERT INTO ResultSplit(result_id, index, time, distance, distance_unit)
-VALUES (
+INSERT INTO ResultSplit([result_id], [index], [time], [distance], [distance_unit])
+VALUES
 	(1, 0, 170.0, 0.5, 'mi'),
 	(1, 1, 365.0, 1.0, 'mi'),
 	(1, 2, 385.0, 1.0, 'mi'),
@@ -13820,5 +13815,4 @@ VALUES (
 	(3277, 0, 447.0, 1.0, 'mi'),
 	(3277, 1, 490.0, 1.0, 'mi'),
 	(3277, 2, 472.0, 1.0, 'mi')
-)
 
