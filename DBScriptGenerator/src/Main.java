@@ -102,10 +102,10 @@ public class Main {
                     cols[i] = cols[i].replaceAll("'", "''");
                 }
                 // Handle adding the athlete if they don't exist
-                int athleteIndex = indexForAthlete(athletes, cols[0]);
-                if (athleteIndex < 0) {
+                int athleteIndex = indexForAthlete(athletes, cols[0]) + 1;
+                if (athleteIndex <= 0) {
                     athletes.add(createAthlete(cols));
-                    athleteIndex = athletes.size() - 1;
+                    athleteIndex = athletes.size();
                 }
                 // Add meet if it doesn't exist
                 Meet meet = new Meet(cols[3], Integer.parseInt(cols[4]));
@@ -195,10 +195,15 @@ public class Main {
                                          ArrayList<Race> races, ArrayList<Result> results,
                                          ArrayList<String> raceLevels, ArrayList<ResultSplit> splits) throws IOException {
         ArrayList<String> lines = new ArrayList<>();
+        ArrayList<String> lines2 = new ArrayList<>();
         Writer fileWriter = new FileWriter("other_insert_script.sql", false);
+        Writer fileWriter2 = new FileWriter("other_insert_script2.sql", false);
         lines.add("USE [TeamXCDB]");
         lines.add("GO");
         lines.add("");
+        lines2.add("USE [TeamXCDB]");
+        lines2.add("GO");
+        lines2.add("");
 
         lines.add("INSERT INTO Athlete([first_name], [last_name], [grad_year], [gender])");
         lines.add("VALUES");
@@ -247,34 +252,45 @@ public class Main {
         }
         lines.add("");
 
-        lines.add("INSERT INTO Result([time], [athlete_id], [race_id])");
-        lines.add("VALUES");
-        for (int i = 0; i < results.size(); i++) {
-            String line = "\t(" + results.get(i).time + ", " + results.get(i).athleteId + ", " +
-                    results.get(i).raceId + ")";
-            if (i + 1 < results.size()) {
-                line += ",";
+        // Need to insert into results multiple times as there are over 1000 rows
+        for (int j = 0; j < Math.ceil(results.size() / 1000.0); j++) {
+            lines2.add("INSERT INTO Result([time], [athlete_id], [race_id])");
+            lines2.add("VALUES");
+            for (int i = j * 1000; i < (j+1) * 1000 && i < results.size(); i++) {
+                String line = "\t(" + results.get(i).time + ", " + results.get(i).athleteId + ", " +
+                        results.get(i).raceId + ")";
+                if (i+1 < (j+1) * 1000 && i+1 < results.size()) {
+                    line += ",";
+                }
+                lines2.add(line);
             }
-            lines.add(line);
+            lines2.add("");
         }
-        lines.add("");
 
-        lines.add("INSERT INTO ResultSplit([result_id], [index], [time], [distance], [distance_unit])");
-        lines.add("VALUES");
-        for (int i = 0; i < splits.size(); i++) {
-            String line = "\t(" + splits.get(i).resultId + ", " + splits.get(i).index + ", " +
-                splits.get(i).time + ", " + splits.get(i).distance + ", '" + splits.get(i).unit.getAbbreviation() + "')";
-            if (i + 1 < splits.size()) {
-                line += ",";
+        // Same deal with the splits, we have over 1000 so have to do multiple inserts
+        for (int j = 0; j < Math.ceil(splits.size() / 1000.0); j++) {
+            lines2.add("INSERT INTO ResultSplit([result_id], [index], [time], [distance], [distance_unit])");
+            lines2.add("VALUES");
+            for (int i = j * 1000; i < (j+1) * 1000 && i < splits.size(); i++) {
+                String line = "\t(" + splits.get(i).resultId + ", " + splits.get(i).index + ", " +
+                        splits.get(i).time + ", " + splits.get(i).distance + ", '" +
+                        splits.get(i).unit.getAbbreviation() + "')";
+                if (i + 1 < (j+1) * 1000 && i + 1 < splits.size()) {
+                    line += ",";
+                }
+                lines2.add(line);
             }
-            lines.add(line);
+            lines2.add("");
         }
-        lines.add("");
 
         for (int i = 0; i < lines.size(); i++) {
             fileWriter.write(lines.get(i) + "\n");
         }
         fileWriter.close();
+        for (int i = 0; i < lines2.size(); i++) {
+            fileWriter2.write(lines2.get(i) + "\n");
+        }
+        fileWriter2.close();
         System.out.println("Done with all others");
     }
 
