@@ -28,5 +28,5 @@ CREATE TABLE Course(
 CREATE TABLE Meet(
 	meet_id int IDENTITY(1,1) PRIMARY KEY,
 	name varchar(100) NOT NULL,
-	[date] date
+	[year] int
 )
