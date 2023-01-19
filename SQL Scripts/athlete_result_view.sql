@@ -1,11 +1,11 @@
 USE [TeamXCDB]
 GO
 
-Alter VIEW ThreeMileResults AS
+CREATE VIEW ThreeMileResults AS
 SELECT a.first_name AS [First Name], a.last_name AS [Last Name], 
 	CONVERT(varchar, DATEADD(ms, rs.[time] * 1000, 0), 108) AS [Time],
 	c.[name] AS Course, m.[name] AS Meet, m.[year] as [Year], rl.[name] AS [Race Level],
-	m.[year] - a.grad_year + 13 AS [Grade], r.distance, rs.[time] as Time_S, rs.result_id, a.athlete_id, r.race_id
+	m.[year] - a.grad_year + 13 AS [Grade]
 FROM Result rs
 JOIN Athlete a ON rs.athlete_id = a.athlete_id
 JOIN Race r ON rs.race_id = r.race_id
