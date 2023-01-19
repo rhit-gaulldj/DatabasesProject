@@ -321,6 +321,14 @@ public class Main {
     private static float parseTime(String timeString) {
         // Split on colons
         String[] segments = timeString.split(":");
+        if (segments.length > 2) {
+            // Erroneously interpreted some sort of 24:XX-esque time as days:hours:minutes
+            // We're going to re-assign segments to properly handle this
+            String[] newSegments = new String[2];
+            newSegments[0] = segments[0];
+            newSegments[1] = segments[1];
+            segments = newSegments;
+        }
         // Parse each individual part, multiplying each successive segment by 60
         // (should never have anything higher than hours)
         int mult = 1;
