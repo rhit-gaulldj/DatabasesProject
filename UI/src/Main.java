@@ -33,7 +33,7 @@ public class Main {
     public Main() {
         properties = getProperties();
 
-        initDb();
+//        initDb();
         initUi();
     }
 
@@ -45,7 +45,7 @@ public class Main {
         connection = dbService.getConnection();
     }
     private void initUi() {
-        JFrame frame = new JFrame("Cross Country App");
+        this.frame = new JFrame("Cross Country App");
 
         // Block standard closing because we want to handle behavior our own way (to close DB connection)
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -60,7 +60,6 @@ public class Main {
             }
         });
 
-        frame.add(new JLabel("HELLO"));
         frame.setVisible(true);
 
         screenDict = new HashMap<>();
