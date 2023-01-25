@@ -1,14 +1,26 @@
 package screens;
 
+import databaseServices.UserService;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class LoginScreen extends Screen {
 
-    private JTextField usernameBox;
+    private JTextField emailBox;
     private JTextField passwordBox;
 
-    private JLabel errorLabel;
+    private JLabel msgLabel;
+
+    private UserService userService;
+
+    public LoginScreen(UserService userService) {
+        super();
+        this.userService = userService;
+    }
+
 
     @Override
     public void populatePanel() {
@@ -16,26 +28,60 @@ public class LoginScreen extends Screen {
         super.createPanel(2, 1);
         JPanel parent = super.getPanel();
         // Create our panels
-        JPanel top = new JPanel(); // 2 rows (user, pass), 2 cols (label, field entry)
-        top.setLayout(new GridLayout(2, 2));
-        JPanel bottom = new JPanel(); // 2 rows (error message, login button), 1 col
-        bottom.setLayout(new GridLayout(2, 1));
+        JPanel top = new JPanel(); // 3 rows (user, pass, buttons), 2 cols (label, field entry)
+        top.setLayout(new GridLayout(3, 2));
+        JPanel bottom = new JPanel(); // 1 row (error message), 1 col
+        bottom.setLayout(new GridLayout(1, 1));
         parent.add(top);
         parent.add(bottom);
 
         // Populate the top panel
-        this.usernameBox = new JTextField();
+        this.emailBox = new JTextField();
         this.passwordBox = new JPasswordField();
-        top.add(new JLabel("Username: "));
-        top.add(this.usernameBox);
+        top.add(new JLabel("Email: "));
+        top.add(this.emailBox);
         top.add(new JLabel("Password: "));
         top.add(this.passwordBox);
+        JButton loginButton = new JButton("Login");
+        loginButton.addActionListener(e -> tryLogin());
+        JButton registerButton = new JButton("Register");
+        registerButton.addActionListener(e -> tryRegister());
+        top.add(loginButton);
+        top.add(registerButton);
 
         // Populate bottom panel
-        JButton loginButton = new JButton("Login");
-        this.errorLabel = new JLabel("");
-        this.errorLabel.setForeground(Color.RED);
-        bottom.add(errorLabel);
-        bottom.add(loginButton);
+        this.msgLabel = new JLabel("");
+        bottom.add(msgLabel);
+    }
+
+    private void tryLogin() {
+        String email = emailBox.getText();
+        String password = passwordBox.getText();
+        boolean success = userService.login(email, password);
+        if (success) {
+            showSuccessMessage("YAY");
+        } else {
+            showErrorMessage("There was an error logging you in.");
+        }
+    }
+
+    private void tryRegister() {
+        String email = emailBox.getText();
+        String password = passwordBox.getText();
+        boolean success = userService.register(email, password);
+        if (success) {
+            showSuccessMessage("You have successfully registered, and can now log in to your account.");
+        } else {
+            showErrorMessage("There was an error registering a new account.");
+        }
+    }
+
+    private void showSuccessMessage(String msg) {
+        msgLabel.setText(msg);
+        msgLabel.setForeground(Color.GREEN);
+    }
+    private void showErrorMessage(String msg) {
+        msgLabel.setText(msg);
+        msgLabel.setForeground(Color.RED);
     }
 }

@@ -2,13 +2,12 @@ USE TeamXCDB
 GO
 
 -- Login and Session tables
-
 CREATE TABLE [Login](
 	email varchar(100) PRIMARY KEY NOT NULL,
 	password_hash varchar(50) NOT NULL,
 	password_salt varchar(50) NOT NULL,
-	created_at datetime NOT NULL,
-	last_login datetime NOT NULL,
+	created_at datetime NOT NULL DEFAULT GETDATE(),
+	last_login datetime NOT NULL DEFAULT GETDATE(),
 
 	CHECK(email LIKE '%@%.%')
 )

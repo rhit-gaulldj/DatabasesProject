@@ -20,6 +20,7 @@ public class Main {
 
     private DBConnectionService dbService;
     private Connection connection;
+    private UserService userService;
 
     private Properties properties;
 
@@ -45,6 +46,8 @@ public class Main {
         dbService.connect(properties.getProperty("serverUsername"), properties.getProperty("serverPassword"));
         System.out.println("Connected successfully");
         connection = dbService.getConnection();
+
+        userService = new UserService(dbService);
     }
     private void initUi() {
         this.frame = new JFrame("Cross Country App");
@@ -65,7 +68,7 @@ public class Main {
         frame.setVisible(true);
 
         screenDict = new HashMap<>();
-        screenDict.put(ScreenTypes.Login, new LoginScreen());
+        screenDict.put(ScreenTypes.Login, new LoginScreen(userService));
 
         for (Screen s : screenDict.values()) {
             JPanel panel = s.getPanel();
@@ -76,11 +79,12 @@ public class Main {
     }
 
     private void switchScreens(ScreenTypes newScreen) {
-        JPanel formerlyActive = this.screenDict.get(this.activeScreen).getPanel();
+        JPanel formerlyActive = screenDict.get(this.activeScreen).getPanel();
         formerlyActive.setVisible(false);
-        JPanel newlyActive = this.screenDict.get(newScreen).getPanel();
+        JPanel newlyActive = screenDict.get(newScreen).getPanel();
         newlyActive.setVisible(true);
         this.activeScreen = newScreen;
+        frame.pack();
     }
 
     private static Properties getProperties() {

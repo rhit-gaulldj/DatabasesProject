@@ -2,3 +2,7 @@ USE [TeamXCDB]
 GO
 
 GRANT EXECUTE ON view_all_results TO TeamXCDB;
+GRANT EXECUTE ON get_salt TO TeamXCDB;
+GRANT EXECUTE ON add_session TO TeamXCDB;
+GRANT EXECUTE ON log_in TO TeamXCDB;
+GRANT EXECUTE ON register TO TeamXCDB;
