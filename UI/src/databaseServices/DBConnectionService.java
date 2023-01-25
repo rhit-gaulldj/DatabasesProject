@@ -40,4 +40,8 @@ public class DBConnectionService {
             }
         }
     }
+
+    public Connection getConnection() {
+        return connection;
+    }
 }
