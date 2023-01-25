@@ -7,6 +7,10 @@ public abstract class Screen {
 
     private JPanel panel;
 
+    public Screen() {
+        populatePanel();
+    }
+
     public abstract void populatePanel();
 
     public void createPanel(int rows, int cols) {

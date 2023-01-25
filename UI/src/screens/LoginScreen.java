@@ -10,9 +10,6 @@ public class LoginScreen extends Screen {
 
     private JLabel errorLabel;
 
-    public LoginScreen() {
-    }
-
     @Override
     public void populatePanel() {
         // Parent panel has 2 rows and 1 column (we'll have 2 panels that go inside of it)

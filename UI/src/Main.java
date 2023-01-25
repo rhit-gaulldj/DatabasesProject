@@ -33,15 +33,17 @@ public class Main {
     public Main() {
         properties = getProperties();
 
-//        initDb();
+        initDb();
         initUi();
     }
 
     private void initDb() {
         dbService = new DBConnectionService(properties.getProperty("serverName"),
                 properties.getProperty("databaseName"));
+        System.out.println("Connecting to database... (Make sure you're on the VPN)");
         // TODO: Encrypt password
         dbService.connect(properties.getProperty("serverUsername"), properties.getProperty("serverPassword"));
+        System.out.println("Connected successfully");
         connection = dbService.getConnection();
     }
     private void initUi() {
@@ -64,14 +66,21 @@ public class Main {
 
         screenDict = new HashMap<>();
         screenDict.put(ScreenTypes.Login, new LoginScreen());
+
+        for (Screen s : screenDict.values()) {
+            JPanel panel = s.getPanel();
+            panel.setVisible(false);
+            frame.add(panel);
+        }
         switchScreens(ScreenTypes.Login);
     }
 
     private void switchScreens(ScreenTypes newScreen) {
-        this.frame.getContentPane().removeAll();
+        JPanel formerlyActive = this.screenDict.get(this.activeScreen).getPanel();
+        formerlyActive.setVisible(false);
+        JPanel newlyActive = this.screenDict.get(newScreen).getPanel();
+        newlyActive.setVisible(true);
         this.activeScreen = newScreen;
-        this.frame.getContentPane().add(this.screenDict.get(newScreen).getPanel());
-        this.frame.repaint();
     }
 
     private static Properties getProperties() {
