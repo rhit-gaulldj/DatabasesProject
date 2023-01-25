@@ -1,4 +1,8 @@
 import databaseServices.*;
+import screens.LoginScreen;
+import screens.Screen;
+import screens.ScreenTypes;
+
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -6,14 +10,21 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
 
 public class Main {
+
+    private JFrame frame;
 
     private DBConnectionService dbService;
     private Connection connection;
 
     private Properties properties;
+
+    private HashMap<ScreenTypes, Screen> screenDict;
+    private ScreenTypes activeScreen = ScreenTypes.Login;
 
     public static void main(String[] args) {
         new Main();
@@ -36,8 +47,6 @@ public class Main {
     private void initUi() {
         JFrame frame = new JFrame("Cross Country App");
 
-        // TODO: Add a JPanel
-
         // Block standard closing because we want to handle behavior our own way (to close DB connection)
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
@@ -51,7 +60,19 @@ public class Main {
             }
         });
 
+        frame.add(new JLabel("HELLO"));
         frame.setVisible(true);
+
+        screenDict = new HashMap<>();
+        screenDict.put(ScreenTypes.Login, new LoginScreen());
+        switchScreens(ScreenTypes.Login);
+    }
+
+    private void switchScreens(ScreenTypes newScreen) {
+        this.frame.getContentPane().removeAll();
+        this.activeScreen = newScreen;
+        this.frame.getContentPane().add(this.screenDict.get(newScreen).getPanel());
+        this.frame.repaint();
     }
 
     private static Properties getProperties() {

@@ -1,2 +1,5 @@
-package screens;public enum ScreenTypes {
+package screens;
+
+public enum ScreenTypes {
+    Login,
 }
