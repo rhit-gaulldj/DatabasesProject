@@ -133,7 +133,7 @@ public class Main {
         frame.pack();
         if(newScreen == ScreenTypes.Test) {
         	
-        	String query = "Select * From Athlete";
+        	
         	try {
 				CallableStatement stmt = dbService.getConnection().prepareCall("{call dbo.view_all_results}");
 				
