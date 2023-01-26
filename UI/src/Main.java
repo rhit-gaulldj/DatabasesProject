@@ -5,6 +5,8 @@ import screens.ScreenTypes;
 import screens.TestScreen;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -13,12 +15,17 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.Vector;
 
 public class Main {
 
@@ -124,6 +131,22 @@ public class Main {
         System.out.println(newlyActive);
         this.activeScreen = newScreen;
         frame.pack();
+        if(newScreen == ScreenTypes.Test) {
+        	
+        	String query = "Select * From Athlete";
+        	try {
+				CallableStatement stmt = dbService.getConnection().prepareCall("{call dbo.view_all_results}");
+				
+				ResultSet rs = stmt.executeQuery();
+				JTable table = new JTable(buildTableModel(rs));
+				newlyActive.add(table);
+				
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
     }
 
     private void onLoginSuccess(String sessionId) {
@@ -159,5 +182,31 @@ public class Main {
             }
         }
         return null;
+    }
+    
+    public static DefaultTableModel buildTableModel(ResultSet rs)
+            throws SQLException {
+
+        ResultSetMetaData metaData = rs.getMetaData();
+
+        // names of columns
+        Vector<String> columnNames = new Vector<String>();
+        int columnCount = metaData.getColumnCount();
+        for (int column = 1; column <= columnCount; column++) {
+            columnNames.add(metaData.getColumnName(column));
+        }
+
+        // data of the table
+        Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+        while (rs.next()) {
+            Vector<Object> vector = new Vector<Object>();
+            for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+                vector.add(rs.getObject(columnIndex));
+            }
+            data.add(vector);
+        }
+
+        return new DefaultTableModel(data, columnNames);
+
     }
 }
