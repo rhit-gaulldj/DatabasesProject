@@ -2,17 +2,23 @@ import databaseServices.*;
 import screens.LoginScreen;
 import screens.Screen;
 import screens.ScreenTypes;
+import screens.TestScreen;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.Scanner;
 
 public class Main {
 
@@ -67,14 +73,42 @@ public class Main {
         frame.setVisible(true);
 
         screenDict = new HashMap<>();
-        screenDict.put(ScreenTypes.Login, new LoginScreen(userService));
+        screenDict.put(ScreenTypes.Login, new LoginScreen(userService, this::onLoginSuccess));
+        screenDict.put(ScreenTypes.Test, new TestScreen());
 
         for (Screen s : screenDict.values()) {
             JPanel panel = s.getPanel();
             panel.setVisible(false);
             frame.add(panel);
         }
-        switchScreens(ScreenTypes.Login);
+        // Attempt to log in with the user's token
+        boolean isLoggedInWithSession = false;
+        File sessionFile = new File(UserService.getSessionIdPath());
+        if (sessionFile.exists()) {
+            try {
+                Scanner reader = new Scanner(sessionFile);
+                String sessionId = reader.next();
+                System.out.println(sessionId);
+                CallableStatement stmt = dbService.getConnection()
+                        .prepareCall("{? = call log_in_session(?, ?)}");
+                stmt.registerOutParameter(1, Types.INTEGER);
+                stmt.setString(2, sessionId);
+                stmt.registerOutParameter(3, Types.BIT);
+                stmt.execute();
+                boolean sessionValid = stmt.getBoolean(3);
+                if (sessionValid) {
+                    isLoggedInWithSession = true;
+                }
+                reader.close();
+            } catch (FileNotFoundException | SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        if (isLoggedInWithSession) {
+            onLoginSuccess();
+        } else {
+            switchScreens(ScreenTypes.Login);
+        }
     }
 
     private void switchScreens(ScreenTypes newScreen) {
@@ -84,6 +118,11 @@ public class Main {
         newlyActive.setVisible(true);
         this.activeScreen = newScreen;
         frame.pack();
+    }
+
+    private void onLoginSuccess() {
+        JOptionPane.showMessageDialog(null, "You're logged in!");
+        switchScreens(ScreenTypes.Test);
     }
 
     private static Properties getProperties() {

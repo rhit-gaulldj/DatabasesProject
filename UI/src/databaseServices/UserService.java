@@ -52,8 +52,7 @@ public class UserService {
             }
 
             // Save the session ID to a file
-            String binDir = System.getProperty("user.dir");
-            FileWriter writer = new FileWriter(binDir + "\\token.txt", false);
+            FileWriter writer = new FileWriter(getSessionIdPath(), false);
             writer.write(sessionId);
             writer.close();
 
@@ -114,6 +113,11 @@ public class UserService {
             e.printStackTrace();
         }
         return getStringFromBytes(hash);
+    }
+
+    public static String getSessionIdPath() {
+        String binDir = System.getProperty("user.dir");
+        return binDir + "\\token.txt";
     }
 
 }

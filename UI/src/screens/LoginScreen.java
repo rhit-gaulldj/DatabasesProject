@@ -1,6 +1,7 @@
 package screens;
 
 import databaseServices.UserService;
+import util.SimpleAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,11 +15,14 @@ public class LoginScreen extends Screen {
 
     private JLabel msgLabel;
 
+    private SimpleAction onLogin;
+
     private UserService userService;
 
-    public LoginScreen(UserService userService) {
+    public LoginScreen(UserService userService, SimpleAction onLogin) {
         super();
         this.userService = userService;
+        this.onLogin = onLogin;
     }
 
 
@@ -50,7 +54,8 @@ public class LoginScreen extends Screen {
         top.add(registerButton);
 
         // Populate bottom panel
-        this.msgLabel = new JLabel("");
+        msgLabel = new JLabel("You do not have an active session. Please sign in.");
+        msgLabel.setForeground(new Color(47, 124, 255));
         bottom.add(msgLabel);
     }
 
@@ -59,7 +64,7 @@ public class LoginScreen extends Screen {
         String password = passwordBox.getText();
         boolean success = userService.login(email, password);
         if (success) {
-            showSuccessMessage("yay");
+            this.onLogin.call();
         } else {
             showErrorMessage("There was an error logging you in.");
         }
