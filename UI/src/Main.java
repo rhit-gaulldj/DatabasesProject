@@ -60,7 +60,6 @@ public class Main {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
                 dbService.closeConnection();
-                System.out.println("Closed");
                 System.exit(0);
             }
         });
@@ -89,7 +88,6 @@ public class Main {
 
     private static Properties getProperties() {
         String binDir = System.getProperty("user.dir");
-        System.out.println(binDir);
         FileInputStream input = null;
         Properties properties = new Properties();
         try {

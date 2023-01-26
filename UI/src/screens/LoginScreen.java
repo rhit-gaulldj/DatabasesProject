@@ -59,7 +59,7 @@ public class LoginScreen extends Screen {
         String password = passwordBox.getText();
         boolean success = userService.login(email, password);
         if (success) {
-            showSuccessMessage("YAY");
+            showSuccessMessage("yay");
         } else {
             showErrorMessage("There was an error logging you in.");
         }

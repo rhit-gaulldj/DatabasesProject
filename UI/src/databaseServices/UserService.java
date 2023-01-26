@@ -3,6 +3,8 @@ package databaseServices;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.swing.*;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
@@ -44,14 +46,20 @@ public class UserService {
             loginStmt.execute();
             int status = loginStmt.getInt(1);
             String sessionId = loginStmt.getString(4);
-            // TODO: Do something w/ session ID
-            System.out.println(sessionId);
+
             if (status != 0) {
                 return false;
             }
+
+            // Save the session ID to a file
+            String binDir = System.getProperty("user.dir");
+            FileWriter writer = new FileWriter(binDir + "\\token.txt", false);
+            writer.write(sessionId);
+            writer.close();
+
             return true;
 
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
         return false;
