@@ -74,20 +74,24 @@ public class Main {
 
         screenDict = new HashMap<>();
         screenDict.put(ScreenTypes.Login, new LoginScreen(userService, this::onLoginSuccess));
-        screenDict.put(ScreenTypes.Test, new TestScreen());
+        screenDict.put(ScreenTypes.Test, new TestScreen(this::onLogout, userService));
 
+        // Create a panel to contain all the others
+        JPanel masterPanel = new JPanel();
         for (Screen s : screenDict.values()) {
             JPanel panel = s.getPanel();
             panel.setVisible(false);
-            frame.add(panel);
+            masterPanel.add(panel);
         }
+        frame.add(masterPanel);
         // Attempt to log in with the user's token
         boolean isLoggedInWithSession = false;
+        String sessionId = null;
         File sessionFile = new File(UserService.getSessionIdPath());
         if (sessionFile.exists()) {
             try {
                 Scanner reader = new Scanner(sessionFile);
-                String sessionId = reader.next();
+                sessionId = reader.next();
                 System.out.println(sessionId);
                 CallableStatement stmt = dbService.getConnection()
                         .prepareCall("{? = call log_in_session(?, ?)}");
@@ -105,24 +109,32 @@ public class Main {
             }
         }
         if (isLoggedInWithSession) {
-            onLoginSuccess();
+            onLoginSuccess(sessionId);
         } else {
             switchScreens(ScreenTypes.Login);
         }
     }
 
     private void switchScreens(ScreenTypes newScreen) {
+        System.out.println(newScreen);
         JPanel formerlyActive = screenDict.get(this.activeScreen).getPanel();
         formerlyActive.setVisible(false);
         JPanel newlyActive = screenDict.get(newScreen).getPanel();
         newlyActive.setVisible(true);
+        System.out.println(newlyActive);
         this.activeScreen = newScreen;
         frame.pack();
     }
 
-    private void onLoginSuccess() {
+    private void onLoginSuccess(String sessionId) {
         JOptionPane.showMessageDialog(null, "You're logged in!");
+        ((TestScreen) screenDict.get(ScreenTypes.Test)).setSessionId(sessionId);
         switchScreens(ScreenTypes.Test);
+    }
+    private void onLogout() {
+        JOptionPane.showMessageDialog(null, "You have logged out");
+        // TODO: reset login message text
+        switchScreens(ScreenTypes.Login);
     }
 
     private static Properties getProperties() {

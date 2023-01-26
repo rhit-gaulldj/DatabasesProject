@@ -7,3 +7,4 @@ GRANT EXECUTE ON add_session TO TeamXCDB;
 GRANT EXECUTE ON log_in TO TeamXCDB;
 GRANT EXECUTE ON register TO TeamXCDB;
 GRANT EXECUTE ON log_in_session TO TeamXCDB;
+GRANT EXECUTE ON log_out TO TeamXCDB;

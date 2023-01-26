@@ -25,7 +25,8 @@ public class UserService {
         this.dbService = dbService;
     }
 
-    public boolean login(String email, String password) {
+    // Returns session ID or null if none
+    public String login(String email, String password) {
         try {
             CallableStatement getSaltStmt = dbService.getConnection()
                     .prepareCall("{call get_salt(?, ?)}");
@@ -48,7 +49,7 @@ public class UserService {
             String sessionId = loginStmt.getString(4);
 
             if (status != 0) {
-                return false;
+                return null;
             }
 
             // Save the session ID to a file
@@ -56,12 +57,12 @@ public class UserService {
             writer.write(sessionId);
             writer.close();
 
-            return true;
+            return sessionId;
 
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
-        return false;
+        return null;
     }
 
     public boolean register(String email, String password) {
@@ -85,6 +86,19 @@ public class UserService {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public void logOut(String sessionId) {
+        try {
+            CallableStatement stmt = dbService.getConnection()
+                    .prepareCall("{? = call log_out(?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setString(2, sessionId);
+            stmt.execute();
+            // TODO: Handle log out errors
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public byte[] getNewSalt() {

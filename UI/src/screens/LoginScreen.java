@@ -2,6 +2,7 @@ package screens;
 
 import databaseServices.UserService;
 import util.SimpleAction;
+import util.StringAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,11 +16,11 @@ public class LoginScreen extends Screen {
 
     private JLabel msgLabel;
 
-    private SimpleAction onLogin;
+    private StringAction onLogin;
 
     private UserService userService;
 
-    public LoginScreen(UserService userService, SimpleAction onLogin) {
+    public LoginScreen(UserService userService, StringAction onLogin) {
         super();
         this.userService = userService;
         this.onLogin = onLogin;
@@ -62,9 +63,9 @@ public class LoginScreen extends Screen {
     private void tryLogin() {
         String email = emailBox.getText();
         String password = passwordBox.getText();
-        boolean success = userService.login(email, password);
-        if (success) {
-            this.onLogin.call();
+        String sessionId = userService.login(email, password);
+        if (sessionId != null) {
+            this.onLogin.call(sessionId);
         } else {
             showErrorMessage("There was an error logging you in.");
         }
