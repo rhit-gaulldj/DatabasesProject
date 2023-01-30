@@ -8,7 +8,7 @@ public abstract class Screen {
     private JPanel panel;
 
     public Screen() {
-        populatePanel();
+        //populatePanel();
     }
 
     public abstract void populatePanel();

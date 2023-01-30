@@ -1,8 +1,6 @@
+import components.NavHandler;
 import databaseServices.*;
-import screens.LoginScreen;
-import screens.Screen;
-import screens.ScreenTypes;
-import screens.TestScreen;
+import screens.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -84,11 +82,13 @@ public class Main {
 
         screenDict = new HashMap<>();
         screenDict.put(ScreenTypes.Login, new LoginScreen(userService, this::onLoginSuccess));
+        screenDict.put(ScreenTypes.AthletesList, new AthletesListScreen(this::switchScreens));
         screenDict.put(ScreenTypes.Test, new TestScreen(this::onLogout, userService));
 
         // Create a panel to contain all the others
         JPanel masterPanel = new JPanel();
         for (Screen s : screenDict.values()) {
+            s.populatePanel();
             JPanel panel = s.getPanel();
             panel.setVisible(false);
             masterPanel.add(panel);
@@ -126,14 +126,14 @@ public class Main {
     }
 
     private void switchScreens(ScreenTypes newScreen) {
-        System.out.println(newScreen);
         JPanel formerlyActive = screenDict.get(this.activeScreen).getPanel();
         formerlyActive.setVisible(false);
         JPanel newlyActive = screenDict.get(newScreen).getPanel();
         newlyActive.setVisible(true);
-        System.out.println(newlyActive);
         this.activeScreen = newScreen;
         frame.pack();
+
+        // TODO: Should be refactored into individual screens
         if(newScreen == ScreenTypes.Test) {
         	
         	
@@ -206,9 +206,10 @@ public class Main {
 
 
     private void onLoginSuccess(String sessionId) {
-        JOptionPane.showMessageDialog(null, "You're logged in!");
         ((TestScreen) screenDict.get(ScreenTypes.Test)).setSessionId(sessionId);
-        switchScreens(ScreenTypes.Test);
+        //switchScreens(ScreenTypes.Test);
+        switchScreens(ScreenTypes.AthletesList);
+        JOptionPane.showMessageDialog(null, "You're logged in!");
     }
     private void onLogout() {
         JOptionPane.showMessageDialog(null, "You have logged out");
