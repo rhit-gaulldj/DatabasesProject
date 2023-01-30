@@ -1,0 +1,6 @@
+USE TeamXCDB
+GO
+
+CREATE PROCEDURE get_athletes
+AS
+	SELECT * FROM Athlete
