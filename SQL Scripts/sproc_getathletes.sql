@@ -1,6 +1,6 @@
 USE TeamXCDB
 GO
 
-CREATE PROCEDURE get_athletes
+ALTER PROCEDURE get_athletes(@page int)
 AS
-	SELECT * FROM Athlete
+	SELECT athlete_id, first_name, last_name, grad_year, gender FROM Athlete

@@ -60,6 +60,11 @@ public class LoginScreen extends Screen {
         bottom.add(msgLabel);
     }
 
+    @Override
+    public void openScreen() {
+
+    }
+
     private void tryLogin() {
         String email = emailBox.getText();
         String password = passwordBox.getText();

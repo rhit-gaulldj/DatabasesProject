@@ -33,8 +33,8 @@ public class Main {
     private JFrame frame;
 
     private DBConnectionService dbService;
-    private Connection connection;
     private UserService userService;
+    private AthleteService athleteService;
 
     private Properties properties;
 
@@ -59,9 +59,9 @@ public class Main {
         // TODO: Encrypt password
         dbService.connect(properties.getProperty("serverUsername"), properties.getProperty("serverPassword"));
         System.out.println("Connected successfully");
-        connection = dbService.getConnection();
 
         userService = new UserService(dbService);
+        athleteService = new AthleteService(dbService);
     }
     private void initUi() {
         this.frame = new JFrame("Cross Country App");
@@ -82,7 +82,7 @@ public class Main {
 
         screenDict = new HashMap<>();
         screenDict.put(ScreenTypes.Login, new LoginScreen(userService, this::onLoginSuccess));
-        screenDict.put(ScreenTypes.AthletesList, new AthletesListScreen(this::switchScreens));
+        screenDict.put(ScreenTypes.AthletesList, new AthletesListScreen(athleteService, this::switchScreens));
         screenDict.put(ScreenTypes.Test, new TestScreen(this::onLogout, userService));
 
         // Create a panel to contain all the others
@@ -125,16 +125,18 @@ public class Main {
         }
     }
 
-    private void switchScreens(ScreenTypes newScreen) {
+    private void switchScreens(ScreenTypes newScreenType) {
         JPanel formerlyActive = screenDict.get(this.activeScreen).getPanel();
         formerlyActive.setVisible(false);
-        JPanel newlyActive = screenDict.get(newScreen).getPanel();
+        Screen newScreen = screenDict.get(newScreenType);
+        JPanel newlyActive = newScreen.getPanel();
         newlyActive.setVisible(true);
-        this.activeScreen = newScreen;
+        this.activeScreen = newScreenType;
+        newScreen.openScreen();
         frame.pack();
 
         // TODO: Should be refactored into individual screens
-        if(newScreen == ScreenTypes.Test) {
+        if(newScreenType == ScreenTypes.Test) {
         	
         	
         	try {

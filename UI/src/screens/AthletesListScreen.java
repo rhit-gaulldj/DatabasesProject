@@ -1,35 +1,35 @@
 package screens;
 
-import components.DataRow;
+import components.ComponentTable;
 import components.NavBar;
 import components.NavHandler;
+import databaseServices.AthleteService;
+import dbObj.Athlete;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.Arrays;
-import java.util.Vector;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AthletesListScreen extends Screen {
 
-    private final NavHandler navHandler;
+    private NavHandler navHandler;
+    private AthleteService athleteService;
 
-    public AthletesListScreen(NavHandler navHandler) {
+    private ComponentTable table;
+
+    public AthletesListScreen(AthleteService athleteService, NavHandler navHandler) {
         super();
         this.navHandler = navHandler;
-
-        String[] colNames = new String[]{
-            "Last Name", "First Name", "Graduation Year"
-        };
-        Object[][] data = new Object[][]{
-                { "Smith", "testname", 2025 }
-        };
+        this.athleteService = athleteService;
     }
 
     @Override
     public void populatePanel() {
-        super.createPanel(4, 1);
+        super.createPanel();
         JPanel parent = super.getPanel();
+        super.setLayout(new BoxLayout(parent, BoxLayout.Y_AXIS));
         NavBar navBar = new NavBar(navHandler);
         parent.add(navBar.getPanel());
 
@@ -38,14 +38,33 @@ public class AthletesListScreen extends Screen {
         buttonRowPanel.add(addAthleteButton);
         parent.add(buttonRowPanel);
 
-        JPanel table = new JPanel();
-        DataRow row = new DataRow();
-        row.setRow(new String[] { "LName", "FName", "2020", "M" });
-        table.add(row.getPanel());
+        table = new ComponentTable(new String[] { "Last Name", "First Name", "Grad Year", "Gender" });
         parent.add(table);
-
-        // TODO: ... Do stuff here...
     }
 
+    @Override
+    public void openScreen() {
+        updateTable();
+    }
+
+    public void updateTable() {
+        // TODO: Add paging
+        List<Athlete> athletes = athleteService.getAthletes(0);
+        ArrayList<JComponent[]> rows = new ArrayList<>();
+        for (Athlete a : athletes) {
+            String fname = a.firstName();
+            String lname = a.lastName();
+            int gradYr = a.gradYear();
+            String gender = a.gender();
+            JComponent[] row = new JComponent[]{
+                new JLabel(fname),
+                new JLabel(lname),
+                new JLabel(Integer.toString(gradYr)),
+                new JLabel(gender)
+            };
+            rows.add(row);
+        }
+        table.setCells(rows);
+    }
 
 }

@@ -34,6 +34,11 @@ public class TestScreen extends Screen {
         panel.add(logoutButton);
     }
 
+    @Override
+    public void openScreen() {
+
+    }
+
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
     }
