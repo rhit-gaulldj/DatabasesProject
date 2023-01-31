@@ -124,7 +124,14 @@ public class AthletesListScreen extends Screen {
         navHandler.navigate(ScreenTypes.AthleteModify, args);
     }
     private void delete(int athleteId) {
+        Athlete ath = athleteService.getAthlete(athleteId);
 
+        int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " +
+                ath.firstName() + " " + ath.lastName() + "?", "Warning", JOptionPane.YES_NO_OPTION);
+        if (dialogResult == JOptionPane.YES_OPTION) {
+            athleteService.deleteAthlete(athleteId);
+            updateAll();
+        }
     }
 
 }

@@ -112,4 +112,18 @@ public class AthleteService {
         }
     }
 
+    public void deleteAthlete(int athleteId) {
+        try {
+            CallableStatement stmt = dbService.getConnection().prepareCall("{? = call delete_athlete(?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setInt(2, athleteId);
+            stmt.execute();
+            int status = stmt.getInt(1);
+            if (status != 0) {
+                JOptionPane.showMessageDialog(null, "Error deleting athlete");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
