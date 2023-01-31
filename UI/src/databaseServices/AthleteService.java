@@ -92,4 +92,24 @@ public class AthleteService {
         return null;
     }
 
+    public void updateAthlete(int athleteId, Athlete ath) {
+        try {
+            CallableStatement stmt = dbService.getConnection().prepareCall("{? = call update_athlete(?, ?, ?, ?, ?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setInt(2, athleteId);
+            stmt.setString(3, ath.firstName());
+            stmt.setString(4, ath.lastName());
+            stmt.setInt(5, ath.gradYear());
+            stmt.setString(6, ath.gender().toString());
+            stmt.execute();
+            int status = stmt.getInt(1);
+            if (status != 0) {
+                JOptionPane.showMessageDialog(null, "Error updating athlete");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

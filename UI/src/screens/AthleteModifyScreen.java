@@ -85,25 +85,31 @@ public class AthleteModifyScreen extends Screen {
     }
 
     private void submit() {
+        String fname = firstNameField.getText();
+        String lname = lastNameField.getText();
+
+        if (fname.length() <= 0 || lname.length() <= 0) {
+            JOptionPane.showMessageDialog(null, "First and last name are required");
+            return;
+        }
+
+        int gradYear = (int) gradYrField.getValue();
+        Gender gender = Gender.fromLongString(genderField.getSelectedItem().toString());
+
         if (currentAthleteId < 0) {
             // Not modifying an athlete, so we should create them
-            String fname = firstNameField.getText();
-            String lname = lastNameField.getText();
-
-            if (fname.length() <= 0 || lname.length() <= 0) {
-                JOptionPane.showMessageDialog(null, "First and last name are required");
-                return;
-            }
-
-            int gradYear = (int) gradYrField.getValue();
-            Gender gender = Gender.fromLongString(genderField.getSelectedItem().toString());
             Athlete a = new Athlete(-1, fname, lname, gender, gradYear);
             athleteService.insertAthlete(a);
+
             ScreenOpenArgs args = new ScreenOpenArgs();
             args.add("page", 0);
             navHandler.navigate(ScreenTypes.AthletesList, args);
         } else {
             // Update an existing athlete
+            Athlete a = new Athlete(currentAthleteId, fname, lname, gender, gradYear);
+            athleteService.updateAthlete(currentAthleteId, a);
+
+            navHandler.navigate(ScreenTypes.AthletesList, new ScreenOpenArgs());
         }
     }
 
