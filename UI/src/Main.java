@@ -210,7 +210,6 @@ public class Main {
         ((TestScreen) screenDict.get(ScreenTypes.Test)).setSessionId(sessionId);
         //switchScreens(ScreenTypes.Test);
         switchScreens(ScreenTypes.AthletesList);
-        JOptionPane.showMessageDialog(null, "You're logged in!");
     }
     private void onLogout() {
         JOptionPane.showMessageDialog(null, "You have logged out");

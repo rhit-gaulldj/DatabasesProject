@@ -63,6 +63,7 @@ public class AthletesListScreen extends Screen {
 
     @Override
     public void openScreen() {
+        page = 0;
         updateAll();
     }
 
@@ -71,7 +72,7 @@ public class AthletesListScreen extends Screen {
         updateTable();
     }
     public void updateTable() {
-        System.out.println(page);
+        System.out.println("PAGE IS (athletelist.java): " + page);
         List<Athlete> athletes = athleteService.getAthletes(page, PAGE_SIZE);
         ArrayList<JComponent[]> rows = new ArrayList<>();
         for (Athlete a : athletes) {
@@ -88,6 +89,8 @@ public class AthletesListScreen extends Screen {
             rows.add(row);
         }
         table.setCells(rows);
+        getPanel().repaint();
+        getPanel().revalidate();
     }
 
     private void nextPage() {
