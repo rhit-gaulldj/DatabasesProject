@@ -102,7 +102,6 @@ public class Main {
             try {
                 Scanner reader = new Scanner(sessionFile);
                 sessionId = reader.next();
-                System.out.println(sessionId);
                 CallableStatement stmt = dbService.getConnection()
                         .prepareCall("{? = call log_in_session(?, ?)}");
                 stmt.registerOutParameter(1, Types.INTEGER);

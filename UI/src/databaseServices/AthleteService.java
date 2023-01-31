@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class AthleteService {
 
@@ -36,6 +35,21 @@ public class AthleteService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public int getAthleteCount() {
+        try {
+            CallableStatement stmt = dbService.getConnection().prepareCall("{? = call get_athlete_count}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 
 }

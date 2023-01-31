@@ -8,6 +8,8 @@ import dbObj.Athlete;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,11 +20,14 @@ public class AthletesListScreen extends Screen {
     private AthleteService athleteService;
 
     // TODO: Add paging buttons
-    // TODO: Add detecting if there's another page (have na output param for total length)
+    // TODO: Add detecting if there's another page (have an output param for total length)
     private int page = 0;
     private static final int PAGE_SIZE = 10;
+    private int athleteCount = 0;
 
     private ComponentTable table;
+    private JButton nextButton;
+    private JButton prevButton;
 
     public AthletesListScreen(AthleteService athleteService, NavHandler navHandler) {
         super();
@@ -45,15 +50,28 @@ public class AthletesListScreen extends Screen {
 
         table = new ComponentTable(new String[] { "Last Name", "First Name", "Grad Year", "Gender" });
         parent.add(table);
+
+        JPanel pageButtonPanel = new JPanel();
+        nextButton = new JButton(">>");
+        prevButton = new JButton("<<");
+        nextButton.addActionListener(e -> nextPage());
+        prevButton.addActionListener(e -> prevPage());
+        pageButtonPanel.add(prevButton);
+        pageButtonPanel.add(nextButton);
+        parent.add(pageButtonPanel);
     }
 
     @Override
     public void openScreen() {
-        updateTable();
+        updateAll();
     }
 
+    private void updateAll() {
+        athleteCount = athleteService.getAthleteCount();
+        updateTable();
+    }
     public void updateTable() {
-        // TODO: Add paging
+        System.out.println(page);
         List<Athlete> athletes = athleteService.getAthletes(page, PAGE_SIZE);
         ArrayList<JComponent[]> rows = new ArrayList<>();
         for (Athlete a : athletes) {
@@ -70,6 +88,15 @@ public class AthletesListScreen extends Screen {
             rows.add(row);
         }
         table.setCells(rows);
+    }
+
+    private void nextPage() {
+        page++;
+        updateTable();
+    }
+    private void prevPage() {
+        page--;
+        updateTable();
     }
 
 }
