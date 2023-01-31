@@ -74,4 +74,22 @@ public class AthleteService {
         }
     }
 
+    public Athlete getAthlete(int id) {
+        try {
+            CallableStatement stmt = dbService.getConnection()
+                    .prepareCall("{? = call get_athlete(?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setInt(2, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new Athlete(rs.getInt(1), rs.getString(2), rs.getString(3),
+                        Gender.fromString(rs.getString(5)), rs.getInt(4));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

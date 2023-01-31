@@ -32,15 +32,12 @@ public class AthleteModifyScreen extends Screen {
 
     @Override
     public void populatePanel() {
-        super.createPanel(2, 1);
-        JPanel parent = super.getPanel();
+        super.createPanel(6, 2);
+        JPanel form = super.getPanel();
 
         titleLabel = new JLabel("TITLE");
-        parent.add(titleLabel);
-
-        JPanel form = new JPanel();
-        form.setLayout(new GridLayout(5, 2));
-        parent.add(form);
+        form.add(titleLabel);
+        form.add(new JLabel()); // Add blank label to fill other slot
 
         firstNameField = new JTextField();
         form.add(new JLabel("First Name:"));
@@ -76,8 +73,14 @@ public class AthleteModifyScreen extends Screen {
         // Args should have a field for the athlete ID, if it doesn't exist then we are creating an athlete
         if (args.has("athlete_id")) {
             currentAthleteId = (int) args.get("athlete_id");
+            titleLabel.setText("Editing Athlete");
+            submitButton.setText("Update");
+            populateFields();
         } else {
             currentAthleteId = -1;
+            titleLabel.setText("Creating Athlete");
+            submitButton.setText("Create");
+            resetFields();
         }
     }
 
@@ -102,5 +105,23 @@ public class AthleteModifyScreen extends Screen {
         } else {
             // Update an existing athlete
         }
+    }
+
+    private void populateFields() {
+        Athlete ath = athleteService.getAthlete(currentAthleteId);
+        firstNameField.setText(ath.firstName());
+        lastNameField.setText(ath.lastName());
+        gradYrField.setValue(ath.gradYear());
+        Gender gender = ath.gender();
+        for (int i = 0; i < GENDERS.length; i++) {
+            if (GENDERS[i].equals(gender.toLongString())) {
+                genderField.setSelectedIndex(i);
+            }
+        }
+    }
+    private void resetFields() {
+        firstNameField.setText("");
+        lastNameField.setText("");
+        gradYrField.setValue(2020);
     }
 }

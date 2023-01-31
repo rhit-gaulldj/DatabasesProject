@@ -34,4 +34,7 @@ public enum Gender {
     public String toString() {
         return n;
     }
+    public String toLongString() {
+        return longN;
+    }
 }

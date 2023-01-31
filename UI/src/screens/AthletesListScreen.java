@@ -1,6 +1,7 @@
 package screens;
 
 import components.ComponentTable;
+import components.LinkButton;
 import components.NavBar;
 import components.NavHandler;
 import databaseServices.AthleteService;
@@ -9,9 +10,6 @@ import dbObj.Gender;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +18,6 @@ public class AthletesListScreen extends Screen {
     private NavHandler navHandler;
     private AthleteService athleteService;
 
-    // TODO: Add paging buttons
-    // TODO: Add detecting if there's another page (have an output param for total length)
     private int page = 0;
     private static final int PAGE_SIZE = 10;
     private int athleteCount = 0;
@@ -52,7 +48,7 @@ public class AthletesListScreen extends Screen {
         buttonRowPanel.add(addAthleteButton);
         parent.add(buttonRowPanel);
 
-        table = new ComponentTable(new String[] { "Last Name", "First Name", "Grad Year", "Gender" });
+        table = new ComponentTable(new String[] { "Last Name", "First Name", "Grad Year", "Gender", "", "" });
         parent.add(table);
 
         JPanel pageButtonPanel = new JPanel();
@@ -85,11 +81,21 @@ public class AthletesListScreen extends Screen {
             String lname = a.lastName();
             int gradYr = a.gradYear();
             Gender gender = a.gender();
+            LinkButton editButton = new LinkButton(new Color(5, 138, 255), "Edit", 12);
+            LinkButton deleteButton = new LinkButton(new Color(193, 71, 71), "Delete", 12);
+            editButton.addActionListener(() -> {
+                edit(a.id());
+            });
+            deleteButton.addActionListener(() -> {
+                delete(a.id());
+            });
             JComponent[] row = new JComponent[]{
                 new JLabel(fname),
                 new JLabel(lname),
                 new JLabel(Integer.toString(gradYr)),
-                new JLabel(gender.toString())
+                new JLabel(gender.toString()),
+                editButton,
+                deleteButton
             };
             rows.add(row);
         }
@@ -110,6 +116,15 @@ public class AthletesListScreen extends Screen {
     private void prevPage() {
         page--;
         updateTable();
+    }
+
+    private void edit(int athleteId) {
+        ScreenOpenArgs args = new ScreenOpenArgs();
+        args.add("athlete_id", athleteId);
+        navHandler.navigate(ScreenTypes.AthleteModify, args);
+    }
+    private void delete(int athleteId) {
+
     }
 
 }

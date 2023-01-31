@@ -11,3 +11,4 @@ GRANT EXECUTE ON log_out TO TeamXCDB;
 GRANT EXECUTE ON get_athletes TO TeamXCDB;
 GRANT EXECUTE ON get_athlete_count TO TeamXCDB;
 GRANT EXECUTE ON insert_athlete TO TeamXCDB;
+GRANT EXECUTE ON get_athlete TO TeamXCDB;
