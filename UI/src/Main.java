@@ -118,6 +118,7 @@ public class Main {
         } else {
             switchScreens(ScreenTypes.Login, new ScreenOpenArgs());
         }
+        frame.pack();
     }
 
     private void switchScreens(ScreenTypes newScreenType, ScreenOpenArgs args) {
@@ -128,7 +129,6 @@ public class Main {
         newlyActive.setVisible(true);
         this.activeScreen = newScreenType;
         newScreen.openScreen(args);
-        frame.pack();
 
         // TODO: Should be refactored into individual screens
         if(newScreenType == ScreenTypes.Test) {

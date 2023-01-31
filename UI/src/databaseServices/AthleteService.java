@@ -1,7 +1,9 @@
 package databaseServices;
 
 import dbObj.Athlete;
+import dbObj.Gender;
 
+import javax.swing.*;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,7 +29,7 @@ public class AthleteService {
             ArrayList<Athlete> athletes = new ArrayList<>();
             while (rs.next()) {
                 Athlete a = new Athlete(rs.getInt(1), rs.getString(2), rs.getString(3),
-                        rs.getString(5), rs.getInt(4));
+                        Gender.fromString(rs.getString(5)), rs.getInt(4));
                 athletes.add(a);
             }
             return athletes;
@@ -50,6 +52,26 @@ public class AthleteService {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    public void insertAthlete(Athlete newAthlete) {
+        try {
+            CallableStatement stmt = dbService.getConnection()
+                    .prepareCall("{? = call insert_athlete(?, ?, ?, ?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setString(2, newAthlete.firstName());
+            stmt.setString(3, newAthlete.lastName());
+            stmt.setInt(4, newAthlete.gradYear());
+            stmt.setString(5, newAthlete.gender().toString());
+            stmt.execute();
+            int status = stmt.getInt(1);
+            if (status == 1) {
+                JOptionPane.showMessageDialog(null, "All fields must be entered");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }

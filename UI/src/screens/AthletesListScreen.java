@@ -5,6 +5,7 @@ import components.NavBar;
 import components.NavHandler;
 import databaseServices.AthleteService;
 import dbObj.Athlete;
+import dbObj.Gender;
 
 import javax.swing.*;
 import java.awt.*;
@@ -83,12 +84,12 @@ public class AthletesListScreen extends Screen {
             String fname = a.firstName();
             String lname = a.lastName();
             int gradYr = a.gradYear();
-            String gender = a.gender();
+            Gender gender = a.gender();
             JComponent[] row = new JComponent[]{
                 new JLabel(fname),
                 new JLabel(lname),
                 new JLabel(Integer.toString(gradYr)),
-                new JLabel(gender)
+                new JLabel(gender.toString())
             };
             rows.add(row);
         }
