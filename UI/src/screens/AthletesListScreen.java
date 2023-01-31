@@ -17,6 +17,11 @@ public class AthletesListScreen extends Screen {
     private NavHandler navHandler;
     private AthleteService athleteService;
 
+    // TODO: Add paging buttons
+    // TODO: Add detecting if there's another page (have na output param for total length)
+    private int page = 0;
+    private static final int PAGE_SIZE = 10;
+
     private ComponentTable table;
 
     public AthletesListScreen(AthleteService athleteService, NavHandler navHandler) {
@@ -49,7 +54,7 @@ public class AthletesListScreen extends Screen {
 
     public void updateTable() {
         // TODO: Add paging
-        List<Athlete> athletes = athleteService.getAthletes(0);
+        List<Athlete> athletes = athleteService.getAthletes(page, PAGE_SIZE);
         ArrayList<JComponent[]> rows = new ArrayList<>();
         for (Athlete a : athletes) {
             String fname = a.firstName();

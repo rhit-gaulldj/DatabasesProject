@@ -18,11 +18,12 @@ public class AthleteService {
         this.dbService = dbService;
     }
 
-    public List<Athlete> getAthletes(int page) {
+    public List<Athlete> getAthletes(int page, int pageSize) {
         try {
-            CallableStatement stmt = dbService.getConnection().prepareCall("{? = call get_athletes(?)}");
+            CallableStatement stmt = dbService.getConnection().prepareCall("{? = call get_athletes(?, ?)}");
             stmt.registerOutParameter(1, Types.INTEGER);
             stmt.setInt(2, page);
+            stmt.setInt(3, pageSize);
             ResultSet rs = stmt.executeQuery();
             ArrayList<Athlete> athletes = new ArrayList<>();
             while (rs.next()) {

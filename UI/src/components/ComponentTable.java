@@ -27,7 +27,8 @@ public class ComponentTable extends JPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        return tablePanel.getPreferredSize();
+        Dimension def = tablePanel.getPreferredSize();
+        return new Dimension(def.width, def.height + 5);
     }
 
     public void setCells(ArrayList<JComponent[]> cells) {
