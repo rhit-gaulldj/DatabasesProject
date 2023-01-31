@@ -72,7 +72,6 @@ public class AthletesListScreen extends Screen {
         updateTable();
     }
     public void updateTable() {
-        System.out.println("PAGE IS (athletelist.java): " + page);
         List<Athlete> athletes = athleteService.getAthletes(page, PAGE_SIZE);
         ArrayList<JComponent[]> rows = new ArrayList<>();
         for (Athlete a : athletes) {
@@ -89,6 +88,11 @@ public class AthletesListScreen extends Screen {
             rows.add(row);
         }
         table.setCells(rows);
+
+        prevButton.setEnabled(page > 0);
+        int maxPage = athleteCount / PAGE_SIZE;
+        nextButton.setEnabled(page < maxPage);
+
         getPanel().repaint();
         getPanel().revalidate();
     }
