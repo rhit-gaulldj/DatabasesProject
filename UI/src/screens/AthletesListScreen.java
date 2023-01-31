@@ -45,6 +45,9 @@ public class AthletesListScreen extends Screen {
 
         JPanel buttonRowPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton addAthleteButton = new JButton("Add New Athlete");
+        addAthleteButton.addActionListener(e -> {
+            navHandler.navigate(ScreenTypes.AthleteModify, new ScreenOpenArgs());
+        });
         buttonRowPanel.add(addAthleteButton);
         parent.add(buttonRowPanel);
 
@@ -63,7 +66,9 @@ public class AthletesListScreen extends Screen {
 
     @Override
     public void openScreen(ScreenOpenArgs args) {
-        page = 0;
+        if (args.has("page")) {
+            page = (int) args.get("page");
+        }
         updateAll();
     }
 

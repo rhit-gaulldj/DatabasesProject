@@ -16,5 +16,7 @@ public class ScreenOpenArgs {
     public Object get(String name) {
         return args.get(name);
     }
-
+    public boolean has(String name) {
+        return args.containsKey(name);
+    }
 }

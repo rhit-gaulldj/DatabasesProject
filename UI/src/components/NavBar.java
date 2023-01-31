@@ -29,11 +29,15 @@ public class NavBar {
         final int FONT_SIZE = 20;
         final Color COLOR = new Color(66, 135, 245);
         final int BULLET_SIZE = 10;
+
         LinkButton athleteButton = new LinkButton(COLOR, "Athletes", BULLET_SIZE);
-        athleteButton.addActionListener(() -> handler.navigate(ScreenTypes.AthletesList,
-                new ScreenOpenArgs()));
+        ScreenOpenArgs alistOpenArgs = new ScreenOpenArgs();
+        alistOpenArgs.add("page", 0);
+        athleteButton.addActionListener(() -> handler.navigate(ScreenTypes.AthletesList, alistOpenArgs));
         panel.add(athleteButton);
         panel.add(new Bullet(COLOR, BULLET_SIZE));
+
+        // TODO: Add new buttons here...
     }
 
 }
