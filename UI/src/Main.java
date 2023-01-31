@@ -1,4 +1,3 @@
-import components.NavHandler;
 import databaseServices.*;
 import screens.*;
 
@@ -15,14 +14,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Types;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.Scanner;
@@ -120,18 +115,18 @@ public class Main {
         if (isLoggedInWithSession) {
             onLoginSuccess(sessionId);
         } else {
-            switchScreens(ScreenTypes.Login);
+            switchScreens(ScreenTypes.Login, new ScreenOpenArgs());
         }
     }
 
-    private void switchScreens(ScreenTypes newScreenType) {
+    private void switchScreens(ScreenTypes newScreenType, ScreenOpenArgs args) {
         JPanel formerlyActive = screenDict.get(this.activeScreen).getPanel();
         formerlyActive.setVisible(false);
         Screen newScreen = screenDict.get(newScreenType);
         JPanel newlyActive = newScreen.getPanel();
         newlyActive.setVisible(true);
         this.activeScreen = newScreenType;
-        newScreen.openScreen();
+        newScreen.openScreen(args);
         frame.pack();
 
         // TODO: Should be refactored into individual screens
@@ -209,12 +204,12 @@ public class Main {
     private void onLoginSuccess(String sessionId) {
         ((TestScreen) screenDict.get(ScreenTypes.Test)).setSessionId(sessionId);
         //switchScreens(ScreenTypes.Test);
-        switchScreens(ScreenTypes.AthletesList);
+        switchScreens(ScreenTypes.AthletesList, new ScreenOpenArgs());
     }
     private void onLogout() {
         JOptionPane.showMessageDialog(null, "You have logged out");
         // TODO: reset login message text
-        switchScreens(ScreenTypes.Login);
+        switchScreens(ScreenTypes.Login, new ScreenOpenArgs());
     }
 
     private static Properties getProperties() {

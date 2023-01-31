@@ -61,7 +61,7 @@ public class LoginScreen extends Screen {
     }
 
     @Override
-    public void openScreen() {
+    public void openScreen(ScreenOpenArgs args) {
 
     }
 

@@ -62,7 +62,7 @@ public class AthletesListScreen extends Screen {
     }
 
     @Override
-    public void openScreen() {
+    public void openScreen(ScreenOpenArgs args) {
         page = 0;
         updateAll();
     }

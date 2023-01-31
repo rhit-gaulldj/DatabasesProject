@@ -12,7 +12,7 @@ public abstract class Screen {
     }
 
     public abstract void populatePanel();
-    public abstract void openScreen();
+    public abstract void openScreen(ScreenOpenArgs args);
 
     public void createPanel(int rows, int cols) {
         GridLayout layout = new GridLayout(rows, cols);

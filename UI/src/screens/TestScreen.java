@@ -35,7 +35,7 @@ public class TestScreen extends Screen {
     }
 
     @Override
-    public void openScreen() {
+    public void openScreen(ScreenOpenArgs args) {
 
     }
 

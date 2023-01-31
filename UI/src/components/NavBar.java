@@ -1,5 +1,6 @@
 package components;
 
+import screens.ScreenOpenArgs;
 import screens.ScreenTypes;
 import util.SimpleAction;
 
@@ -29,7 +30,8 @@ public class NavBar {
         final Color COLOR = new Color(66, 135, 245);
         final int BULLET_SIZE = 10;
         LinkButton athleteButton = new LinkButton(COLOR, "Athletes", BULLET_SIZE);
-        athleteButton.addActionListener(() -> handler.navigate(ScreenTypes.AthletesList));
+        athleteButton.addActionListener(() -> handler.navigate(ScreenTypes.AthletesList,
+                new ScreenOpenArgs()));
         panel.add(athleteButton);
         panel.add(new Bullet(COLOR, BULLET_SIZE));
     }
