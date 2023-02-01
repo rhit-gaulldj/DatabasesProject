@@ -14,3 +14,5 @@ GRANT EXECUTE ON insert_athlete TO TeamXCDB;
 GRANT EXECUTE ON get_athlete TO TeamXCDB;
 GRANT EXECUTE ON update_athlete TO TeamXCDB;
 GRANT EXECUTE ON delete_athlete TO TeamXCDB;
+GRANT EXECUTE ON get_courses TO TeamXCDB;
+GRANT EXECUTE ON get_course_count TO TeamXCDB;

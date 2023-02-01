@@ -5,5 +5,6 @@ public enum ScreenTypes {
     Test,
     AthletesList,
     AthleteModify,
-
+    CourseList,
+    CourseModify,
 }
