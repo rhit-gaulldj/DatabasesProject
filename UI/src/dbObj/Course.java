@@ -1,2 +1,3 @@
-package dbObj;public class Course {
-}
+package dbObj;
+
+public record Course(int id, String name) {}

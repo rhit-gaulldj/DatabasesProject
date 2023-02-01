@@ -11,5 +11,5 @@ GO
 
 CREATE PROCEDURE get_course_count
 AS
-	SELECT COUNT(*) FROM Athlete
+	SELECT COUNT(*) FROM Course
 GO
