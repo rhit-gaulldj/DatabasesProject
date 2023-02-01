@@ -7,4 +7,6 @@ public enum ScreenTypes {
     AthleteModify,
     CourseList,
     CourseModify,
+    MeetList,
+    MeetModify,
 }

@@ -31,6 +31,7 @@ public class Main {
     private UserService userService;
     private AthleteService athleteService;
     private CourseService courseService;
+    private MeetService meetService;
 
     private Properties properties;
 
@@ -59,6 +60,7 @@ public class Main {
         userService = new UserService(dbService);
         athleteService = new AthleteService(dbService);
         courseService = new CourseService(dbService);
+        meetService = new MeetService(dbService);
     }
     private void initUi() {
         this.frame = new JFrame("Cross Country App");
@@ -84,6 +86,7 @@ public class Main {
         screenDict.put(ScreenTypes.Test, new TestScreen(this::onLogout, userService));
         screenDict.put(ScreenTypes.AthleteModify, new AthleteModifyScreen(athleteService, this::switchScreens));
         screenDict.put(ScreenTypes.CourseList, new CourseListScreen(this::switchScreens, userService, courseService));
+        screenDict.put(ScreenTypes.MeetList, new MeetListScreen(this::switchScreens, userService, meetService));
 
         // Create a panel to contain all the others
         JPanel masterPanel = new JPanel();
