@@ -1,5 +1,6 @@
 package components;
 
+import databaseServices.UserService;
 import screens.ScreenOpenArgs;
 import screens.ScreenTypes;
 import util.SimpleAction;
@@ -13,9 +14,11 @@ public class NavBar {
 
     private JPanel panel;
     private NavHandler handler;
+    private UserService userService;
 
-    public NavBar(NavHandler handler) {
+    public NavBar(NavHandler handler, UserService userService) {
         this.handler = handler;
+        this.userService = userService;
         panel = new JPanel();
         addButtons();
     }
@@ -35,9 +38,22 @@ public class NavBar {
         alistOpenArgs.add("page", 0);
         athleteButton.addActionListener(() -> handler.navigate(ScreenTypes.AthletesList, alistOpenArgs));
         panel.add(athleteButton);
-        panel.add(new Bullet(COLOR, BULLET_SIZE));
+        panel.add(new Bullet(Color.black, BULLET_SIZE));
+
+        LinkButton logoutButton = new LinkButton(new Color(193, 71, 71), "Logout", BULLET_SIZE);
+        logoutButton.addActionListener(() -> logout());
+        panel.add(logoutButton);
 
         // TODO: Add new buttons here...
+    }
+
+    private void logout() {
+        int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to log out?",
+                "Confirm Action", JOptionPane.YES_NO_OPTION);
+        if (dialogResult == JOptionPane.YES_OPTION) {
+            userService.logOut();
+            handler.navigate(ScreenTypes.Login, new ScreenOpenArgs());
+        }
     }
 
 }

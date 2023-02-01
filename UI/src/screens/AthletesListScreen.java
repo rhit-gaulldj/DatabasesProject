@@ -5,6 +5,7 @@ import components.LinkButton;
 import components.NavBar;
 import components.NavHandler;
 import databaseServices.AthleteService;
+import databaseServices.UserService;
 import dbObj.Athlete;
 import dbObj.Gender;
 
@@ -17,6 +18,7 @@ public class AthletesListScreen extends Screen {
 
     private NavHandler navHandler;
     private AthleteService athleteService;
+    private UserService userService;
 
     private int page = 0;
     private static final int PAGE_SIZE = 10;
@@ -26,10 +28,11 @@ public class AthletesListScreen extends Screen {
     private JButton nextButton;
     private JButton prevButton;
 
-    public AthletesListScreen(AthleteService athleteService, NavHandler navHandler) {
+    public AthletesListScreen(AthleteService athleteService, UserService userService, NavHandler navHandler) {
         super();
         this.navHandler = navHandler;
         this.athleteService = athleteService;
+        this.userService = userService;
     }
 
     @Override
@@ -37,7 +40,7 @@ public class AthletesListScreen extends Screen {
         super.createPanel();
         JPanel parent = super.getPanel();
         super.setLayout(new BoxLayout(parent, BoxLayout.Y_AXIS));
-        NavBar navBar = new NavBar(navHandler);
+        NavBar navBar = new NavBar(navHandler, userService);
         parent.add(navBar.getPanel());
 
         JPanel buttonRowPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -102,7 +105,7 @@ public class AthletesListScreen extends Screen {
         table.setCells(rows);
 
         prevButton.setEnabled(page > 0);
-        int maxPage = athleteCount / PAGE_SIZE;
+        int maxPage = (athleteCount - 1) / PAGE_SIZE;
         nextButton.setEnabled(page < maxPage);
 
         getPanel().repaint();

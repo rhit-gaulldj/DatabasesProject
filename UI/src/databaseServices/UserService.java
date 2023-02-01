@@ -21,8 +21,14 @@ public class UserService {
 
     private DBConnectionService dbService;
 
+    private String sessionId;
+
     public UserService(DBConnectionService dbService) {
         this.dbService = dbService;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     // Returns session ID or null if none
@@ -57,6 +63,8 @@ public class UserService {
             writer.write(sessionId);
             writer.close();
 
+            this.sessionId = sessionId;
+
             return sessionId;
 
         } catch (SQLException | IOException e) {
@@ -88,7 +96,7 @@ public class UserService {
         return false;
     }
 
-    public void logOut(String sessionId) {
+    public void logOut() {
         try {
             CallableStatement stmt = dbService.getConnection()
                     .prepareCall("{? = call log_out(?)}");

@@ -77,7 +77,8 @@ public class Main {
 
         screenDict = new HashMap<>();
         screenDict.put(ScreenTypes.Login, new LoginScreen(userService, this::onLoginSuccess));
-        screenDict.put(ScreenTypes.AthletesList, new AthletesListScreen(athleteService, this::switchScreens));
+        screenDict.put(ScreenTypes.AthletesList, new AthletesListScreen(athleteService,
+                userService, this::switchScreens));
         screenDict.put(ScreenTypes.Test, new TestScreen(this::onLogout, userService));
         screenDict.put(ScreenTypes.AthleteModify, new AthleteModifyScreen(athleteService, this::switchScreens));
 
@@ -94,6 +95,7 @@ public class Main {
         boolean isLoggedInWithSession = false;
         String sessionId = null;
         File sessionFile = new File(UserService.getSessionIdPath());
+        // TODO: Move to user service
         if (sessionFile.exists()) {
             try {
                 Scanner reader = new Scanner(sessionFile);
@@ -205,11 +207,11 @@ public class Main {
     private void onLoginSuccess(String sessionId) {
         ((TestScreen) screenDict.get(ScreenTypes.Test)).setSessionId(sessionId);
         //switchScreens(ScreenTypes.Test);
+        userService.setSessionId(sessionId);
         switchScreens(ScreenTypes.AthletesList, new ScreenOpenArgs());
     }
     private void onLogout() {
         JOptionPane.showMessageDialog(null, "You have logged out");
-        // TODO: reset login message text
         switchScreens(ScreenTypes.Login, new ScreenOpenArgs());
     }
 

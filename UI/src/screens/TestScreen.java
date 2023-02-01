@@ -27,7 +27,7 @@ public class TestScreen extends Screen {
         logoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                userService.logOut(sessionId);
+                userService.logOut();
                 onLogout.call();
             }
         });
