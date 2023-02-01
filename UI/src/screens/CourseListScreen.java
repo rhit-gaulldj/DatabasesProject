@@ -29,8 +29,7 @@ public class CourseListScreen extends ListScreen {
         this.courseService = courseService;
         this.handler = handler;
 
-        // TODO: Add on add handler
-        // TODO: Add get count handler
+        addOnAddHandler(() -> handler.navigate(ScreenTypes.CourseModify, new ScreenOpenArgs()));
         addGetCountHandler(() -> courseService.getCourseCount());
     }
 
@@ -43,6 +42,7 @@ public class CourseListScreen extends ListScreen {
             LinkButton editButton = new LinkButton(new Color(5, 138, 255), "Edit", 12);
             LinkButton deleteButton = new LinkButton(new Color(193, 71, 71), "Delete", 12);
             editButton.addActionListener(() -> {
+                // TODO: Write edit & delete
                 //edit(a.id());
             });
             deleteButton.addActionListener(() -> {

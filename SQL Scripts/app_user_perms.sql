@@ -16,3 +16,5 @@ GRANT EXECUTE ON update_athlete TO TeamXCDB;
 GRANT EXECUTE ON delete_athlete TO TeamXCDB;
 GRANT EXECUTE ON get_courses TO TeamXCDB;
 GRANT EXECUTE ON get_course_count TO TeamXCDB;
+GRANT EXECUTE ON get_meets TO TeamXCDB;
+GRANT EXECUTE ON get_meet_count TO TeamXCDB;
