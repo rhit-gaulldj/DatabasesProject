@@ -33,14 +33,14 @@ public class NavBar {
         final Color COLOR = new Color(66, 135, 245);
         final int BULLET_SIZE = 10;
 
-        LinkButton athleteButton = new LinkButton(COLOR, "Athletes", BULLET_SIZE);
+        LinkButton athleteButton = new LinkButton(COLOR, "Athletes", FONT_SIZE);
         ScreenOpenArgs alistOpenArgs = new ScreenOpenArgs();
         alistOpenArgs.add("page", 0);
         athleteButton.addActionListener(() -> handler.navigate(ScreenTypes.AthletesList, alistOpenArgs));
         panel.add(athleteButton);
         panel.add(new Bullet(Color.black, BULLET_SIZE));
 
-        LinkButton logoutButton = new LinkButton(new Color(193, 71, 71), "Logout", BULLET_SIZE);
+        LinkButton logoutButton = new LinkButton(new Color(193, 71, 71), "Logout", FONT_SIZE);
         logoutButton.addActionListener(() -> logout());
         panel.add(logoutButton);
 
