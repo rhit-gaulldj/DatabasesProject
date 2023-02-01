@@ -3,12 +3,9 @@ package components;
 import databaseServices.UserService;
 import screens.ScreenOpenArgs;
 import screens.ScreenTypes;
-import util.SimpleAction;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeListener;
 
 public class NavBar {
 

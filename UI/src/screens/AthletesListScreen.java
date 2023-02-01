@@ -8,75 +8,88 @@ import databaseServices.AthleteService;
 import databaseServices.UserService;
 import dbObj.Athlete;
 import dbObj.Gender;
+import util.IntReturnAction;
+import util.SimpleAction;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AthletesListScreen extends Screen {
+public class AthletesListScreen extends ListScreen {
 
     private NavHandler navHandler;
     private AthleteService athleteService;
-    private UserService userService;
+//    private UserService userService;
 
-    private int page = 0;
+//    private int page = 0;
     private static final int PAGE_SIZE = 10;
-    private int athleteCount = 0;
+//    private int athleteCount = 0;
 
-    private ComponentTable table;
-    private JButton nextButton;
-    private JButton prevButton;
+//    private ComponentTable table;
+//    private JButton nextButton;
+//    private JButton prevButton;
 
     public AthletesListScreen(AthleteService athleteService, UserService userService, NavHandler navHandler) {
-        super();
+        super(PAGE_SIZE, navHandler, userService, "Athlete");
         this.navHandler = navHandler;
         this.athleteService = athleteService;
-        this.userService = userService;
+//        this.userService = userService;
+
+        addOnAddHandler(() -> navHandler.navigate(ScreenTypes.AthleteModify, new ScreenOpenArgs()));
+        addGetCountHandler(() -> athleteService.getAthleteCount());
     }
+
+//    @Override
+//    public void populatePanel() {
+//        super.createPanel();
+//        JPanel parent = super.getPanel();
+//        super.setLayout(new BoxLayout(parent, BoxLayout.Y_AXIS));
+//        NavBar navBar = new NavBar(navHandler, userService);
+//        parent.add(navBar.getPanel());
+//
+//        JPanel buttonRowPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+//        JButton addAthleteButton = new JButton("Add New Athlete");
+//        addAthleteButton.addActionListener(e -> {
+//            navHandler.navigate(ScreenTypes.AthleteModify, new ScreenOpenArgs());
+//        });
+//        buttonRowPanel.add(addAthleteButton);
+//        parent.add(buttonRowPanel);
+//
+//        table = new ComponentTable(new String[] { "Last Name", "First Name", "Grad Year", "Gender", "", "" });
+//        parent.add(table);
+//
+//        JPanel pageButtonPanel = new JPanel();
+//        nextButton = new JButton(">>");
+//        prevButton = new JButton("<<");
+//        nextButton.addActionListener(e -> nextPage());
+//        prevButton.addActionListener(e -> prevPage());
+//        pageButtonPanel.add(prevButton);
+//        pageButtonPanel.add(nextButton);
+//        parent.add(pageButtonPanel);
+//    }
+
+//    @Override
+//    public void openScreen(ScreenOpenArgs args) {
+//        if (args.has("page")) {
+//            page = (int) args.get("page");
+//        }
+//        updateAll();
+//    }
+//
+//    private void updateAll() {
+//        athleteCount = athleteService.getAthleteCount();
+//        updateTable();
+//    }
+
 
     @Override
     public void populatePanel() {
-        super.createPanel();
-        JPanel parent = super.getPanel();
-        super.setLayout(new BoxLayout(parent, BoxLayout.Y_AXIS));
-        NavBar navBar = new NavBar(navHandler, userService);
-        parent.add(navBar.getPanel());
-
-        JPanel buttonRowPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton addAthleteButton = new JButton("Add New Athlete");
-        addAthleteButton.addActionListener(e -> {
-            navHandler.navigate(ScreenTypes.AthleteModify, new ScreenOpenArgs());
-        });
-        buttonRowPanel.add(addAthleteButton);
-        parent.add(buttonRowPanel);
-
-        table = new ComponentTable(new String[] { "Last Name", "First Name", "Grad Year", "Gender", "", "" });
-        parent.add(table);
-
-        JPanel pageButtonPanel = new JPanel();
-        nextButton = new JButton(">>");
-        prevButton = new JButton("<<");
-        nextButton.addActionListener(e -> nextPage());
-        prevButton.addActionListener(e -> prevPage());
-        pageButtonPanel.add(prevButton);
-        pageButtonPanel.add(nextButton);
-        parent.add(pageButtonPanel);
+        super.populatePanel(new String[]{ "Last Name", "First Name", "Grad Year", "Gender", "", "" });
     }
 
     @Override
-    public void openScreen(ScreenOpenArgs args) {
-        if (args.has("page")) {
-            page = (int) args.get("page");
-        }
-        updateAll();
-    }
-
-    private void updateAll() {
-        athleteCount = athleteService.getAthleteCount();
-        updateTable();
-    }
-    public void updateTable() {
+    public void updateTable(ComponentTable table, int page) {
         List<Athlete> athletes = athleteService.getAthletes(page, PAGE_SIZE);
         ArrayList<JComponent[]> rows = new ArrayList<>();
         for (Athlete a : athletes) {
@@ -104,22 +117,22 @@ public class AthletesListScreen extends Screen {
         }
         table.setCells(rows);
 
-        prevButton.setEnabled(page > 0);
-        int maxPage = (athleteCount - 1) / PAGE_SIZE;
-        nextButton.setEnabled(page < maxPage);
-
-        getPanel().repaint();
-        getPanel().revalidate();
+//        prevButton.setEnabled(page > 0);
+//        int maxPage = (athleteCount - 1) / PAGE_SIZE;
+//        nextButton.setEnabled(page < maxPage);
+//
+//        getPanel().repaint();
+//        getPanel().revalidate();
     }
 
-    private void nextPage() {
-        page++;
-        updateTable();
-    }
-    private void prevPage() {
-        page--;
-        updateTable();
-    }
+//    private void nextPage() {
+//        page++;
+//        updateTable();
+//    }
+//    private void prevPage() {
+//        page--;
+//        updateTable();
+//    }
 
     private void edit(int athleteId) {
         ScreenOpenArgs args = new ScreenOpenArgs();
