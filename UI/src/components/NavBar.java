@@ -29,7 +29,7 @@ public class NavBar {
 
     private void addButtons() {
         // Add all navigation buttons as links
-        final int FONT_SIZE = 20;
+        final int FONT_SIZE = 15;
         final Color COLOR = new Color(66, 135, 245);
         final int BULLET_SIZE = 10;
 
