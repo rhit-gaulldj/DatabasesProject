@@ -4,6 +4,7 @@ import dbObj.Athlete;
 import dbObj.Course;
 import dbObj.Gender;
 
+import javax.swing.*;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -32,6 +33,24 @@ public class CourseService extends AbstractDBService {
             stmt.registerOutParameter(1, Types.INTEGER);
             stmt.setString(2, newCourse.name());
             stmt.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateCourse(int id, Course newObj) {
+        try {
+            CallableStatement stmt = dbService.getConnection()
+                    .prepareCall("{? = call update_course(?, ?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setInt(2, id);
+            stmt.setString(3, newObj.name());
+            stmt.execute();
+            int status = stmt.getInt(1);
+            if (status != 0) {
+                JOptionPane.showMessageDialog(null, "Error updating course");
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();

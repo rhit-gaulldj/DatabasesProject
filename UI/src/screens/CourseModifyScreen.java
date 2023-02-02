@@ -56,6 +56,7 @@ public class CourseModifyScreen extends Screen {
             currentCourseId = -1;
             titleLabel.setText("Creating Course");
             submitButton.setText("Create");
+            nameField.setText("");
         }
     }
 
@@ -74,7 +75,9 @@ public class CourseModifyScreen extends Screen {
             args.add("page", 0);
             navHandler.navigate(ScreenTypes.CourseList, args);
         } else {
-
+            Course c = new Course(currentCourseId, name);
+            courseService.updateCourse(currentCourseId, c);
+            navHandler.navigate(ScreenTypes.CourseList, new ScreenOpenArgs());
         }
     }
 
