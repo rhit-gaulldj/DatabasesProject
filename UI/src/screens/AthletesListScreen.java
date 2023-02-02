@@ -32,6 +32,9 @@ public class AthletesListScreen extends ListScreen {
                 };
             }
         });
+
+        addEditHandler(this::edit);
+        addDeleteHandler(this::delete);
     }
 
     @Override
@@ -39,18 +42,19 @@ public class AthletesListScreen extends ListScreen {
         super.populatePanel(new String[]{ "Last Name", "First Name", "Grad Year", "Gender", "", "" });
     }
 
-    private void edit(int athleteId) {
+    private void edit(Object athlete) {
+        Athlete a = (Athlete) athlete;
         ScreenOpenArgs args = new ScreenOpenArgs();
-        args.add("athlete_id", athleteId);
+        args.add("athlete_id", a.id());
         navHandler.navigate(ScreenTypes.AthleteModify, args);
     }
-    private void delete(int athleteId) {
-        Athlete ath = athleteService.getAthlete(athleteId);
+    private void delete(Object athlete) {
+        Athlete ath = (Athlete) athlete;
 
         int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " +
                 ath.firstName() + " " + ath.lastName() + "?", "Warning", JOptionPane.YES_NO_OPTION);
         if (dialogResult == JOptionPane.YES_OPTION) {
-            athleteService.deleteAthlete(athleteId);
+            athleteService.deleteAthlete(ath.id());
             updateAll();
         }
     }

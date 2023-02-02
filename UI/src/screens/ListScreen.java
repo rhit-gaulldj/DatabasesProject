@@ -7,9 +7,8 @@ import components.NavHandler;
 import databaseServices.AbstractDBService;
 import databaseServices.DBObjectToFieldsHandler;
 import databaseServices.UserService;
-import dbObj.Athlete;
-import dbObj.Gender;
-import util.IntReturnAction;
+import util.DeleteAction;
+import util.EditAction;
 import util.SimpleAction;
 
 import javax.swing.*;
@@ -35,6 +34,8 @@ public abstract class ListScreen extends Screen {
 
     private SimpleAction onAdd;
     private DBObjectToFieldsHandler toFieldsHandler;
+    private EditAction edit;
+    private DeleteAction delete;
 
     public ListScreen(int pageSize, NavHandler handler, UserService userService, String objName,
                       AbstractDBService service) {
@@ -76,15 +77,14 @@ public abstract class ListScreen extends Screen {
 
     private void nextPage() {
         page++;
-        myUpdateTable();
+        updateTable();
     }
     private void prevPage() {
         page--;
-        myUpdateTable();
+        updateTable();
     }
 
-    private void myUpdateTable() {
-        //updateTable(table, page);
+    private void updateTable() {
         List<Object> objects = service.getObjects(page, pageSize);
         ArrayList<JComponent[]> rows = new ArrayList<>();
         for (Object o : objects) {
@@ -92,11 +92,10 @@ public abstract class ListScreen extends Screen {
             LinkButton editButton = new LinkButton(new Color(5, 138, 255), "Edit", 12);
             LinkButton deleteButton = new LinkButton(new Color(193, 71, 71), "Delete", 12);
             editButton.addActionListener(() -> {
-                // TODO: Add edit and delete functionality
-                //edit(a.id());
+                edit.edit(o);
             });
             deleteButton.addActionListener(() -> {
-                //delete(a.id());
+                delete.delete(o);
             });
             // Do +2 to account for edit/delete buttons
             JComponent[] row = new JComponent[fields.length + 2];
@@ -126,9 +125,8 @@ public abstract class ListScreen extends Screen {
 
     public void updateAll() {
         maxEntries = service.getObjectCount();
-        myUpdateTable();
+        updateTable();
     }
-
 
     public void addOnAddHandler(SimpleAction action) {
         onAdd = action;
@@ -136,5 +134,10 @@ public abstract class ListScreen extends Screen {
     public void addGetFieldsHandler(DBObjectToFieldsHandler toFieldsHandler) {
         this.toFieldsHandler = toFieldsHandler;
     }
-
+    public void addEditHandler(EditAction edit) {
+        this.edit = edit;
+    }
+    public void addDeleteHandler(DeleteAction delete) {
+        this.delete = delete;
+    }
 }
