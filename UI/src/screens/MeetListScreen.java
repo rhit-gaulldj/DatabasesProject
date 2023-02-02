@@ -1,9 +1,7 @@
 package screens;
 
-import components.ComponentTable;
-import components.LinkButton;
 import components.NavHandler;
-import databaseServices.AthleteService;
+import databaseServices.CourseService;
 import databaseServices.DBObjectToFieldsHandler;
 import databaseServices.MeetService;
 import databaseServices.UserService;
@@ -11,16 +9,19 @@ import dbObj.Course;
 import dbObj.Meet;
 
 import javax.swing.*;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MeetListScreen extends ListScreen {
 
     private static final int PAGE_SIZE = 10;
 
+    private NavHandler navHandler;
+    private MeetService service;
+
     public MeetListScreen(NavHandler handler, UserService userService, MeetService meetService) {
-        super(PAGE_SIZE, handler, userService, "Meet", new AthleteService(null));
+        super(PAGE_SIZE, handler, userService, "Meet", meetService);
+
+        this.service = meetService;
+        this.navHandler = handler;
 
         addOnAddHandler(() -> handler.navigate(ScreenTypes.MeetModify, new ScreenOpenArgs()));
         addGetFieldsHandler(new DBObjectToFieldsHandler() {
@@ -33,10 +34,30 @@ public class MeetListScreen extends ListScreen {
                 };
             }
         });
+
+        addEditHandler(this::edit);
+        addDeleteHandler(this::delete);
     }
 
     @Override
     public void populatePanel() {
         super.populatePanel(new String[]{ "Name", "Year", "", "" });
+    }
+
+    private void edit(Object obj) {
+        Meet m = (Meet) obj;
+        ScreenOpenArgs args = new ScreenOpenArgs();
+        args.add("meet_id", m.id());
+        navHandler.navigate(ScreenTypes.MeetModify, args);
+    }
+    private void delete(Object obj) {
+        Meet m = (Meet) obj;
+
+        int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " +
+                m.name() + "?", "Warning", JOptionPane.YES_NO_OPTION);
+        if (dialogResult == JOptionPane.YES_OPTION) {
+            service.delete(m.id());
+            updateAll();
+        }
     }
 }

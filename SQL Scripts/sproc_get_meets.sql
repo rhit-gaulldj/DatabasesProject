@@ -5,7 +5,7 @@ CREATE PROCEDURE get_meets(@page int, @page_size int)
 AS
 	SELECT meet_id, [name], [year]
 	FROM Meet
-	ORDER BY [year], [name] ASC
+	ORDER BY [year] DESC, [name]
 	OFFSET (@page * @page_size) ROWS FETCH NEXT @page_size ROWS ONLY
 GO
 

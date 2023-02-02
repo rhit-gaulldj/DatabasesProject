@@ -24,3 +24,4 @@ GRANT EXECUTE ON delete_course TO TeamXCDB;
 GRANT EXECUTE ON get_course TO TeamXCDB;
 GRANT EXECUTE ON update_course TO TeamXCDB;
 GRANT EXECUTE ON delete_course TO TeamXCDB;
+GRANT EXECUTE ON delete_meet TO TeamXCDB;
