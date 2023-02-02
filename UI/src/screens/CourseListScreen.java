@@ -4,7 +4,9 @@ import components.ComponentTable;
 import components.LinkButton;
 import components.NavBar;
 import components.NavHandler;
+import databaseServices.AthleteService;
 import databaseServices.CourseService;
+import databaseServices.DBObjectToFieldsHandler;
 import databaseServices.UserService;
 import dbObj.Athlete;
 import dbObj.Course;
@@ -18,44 +20,21 @@ import java.util.List;
 
 public class CourseListScreen extends ListScreen {
 
-    private CourseService courseService;
-    private NavHandler handler;
-
     private static final int PAGE_SIZE = 10;
 
     public CourseListScreen(NavHandler handler, UserService userService, CourseService courseService) {
-        super(PAGE_SIZE, handler, userService, "Course");
-
-        this.courseService = courseService;
-        this.handler = handler;
+        super(PAGE_SIZE, handler, userService, "Course", courseService);
 
         addOnAddHandler(() -> handler.navigate(ScreenTypes.CourseModify, new ScreenOpenArgs()));
-        addGetCountHandler(() -> courseService.getCourseCount());
-    }
-
-    @Override
-    protected void updateTable(ComponentTable table, int page) {
-        List<Course> courses = courseService.getCourses(page, PAGE_SIZE);
-        ArrayList<JComponent[]> rows = new ArrayList<>();
-        for (Course c : courses) {
-            String name = c.name();
-            LinkButton editButton = new LinkButton(new Color(5, 138, 255), "Edit", 12);
-            LinkButton deleteButton = new LinkButton(new Color(193, 71, 71), "Delete", 12);
-            editButton.addActionListener(() -> {
-                // TODO: Write edit & delete
-                //edit(a.id());
-            });
-            deleteButton.addActionListener(() -> {
-                //delete(a.id());
-            });
-            JComponent[] row = new JComponent[]{
-                    new JLabel(name),
-                    editButton,
-                    deleteButton
-            };
-            rows.add(row);
-        }
-        table.setCells(rows);
+        addGetFieldsHandler(new DBObjectToFieldsHandler() {
+            @Override
+            public String[] toFields(Object dbObj) {
+                Course c = (Course) dbObj;
+                return new String[] {
+                        c.name()
+                };
+            }
+        });
     }
 
     @Override

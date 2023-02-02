@@ -11,47 +11,16 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AthleteService {
+public class AthleteService extends AbstractDBService {
 
     private DBConnectionService dbService;
 
     public AthleteService(DBConnectionService dbService) {
+        super(dbService, (rs) -> {
+            return new Athlete(rs.getInt(1), rs.getString(2), rs.getString(3),
+                    Gender.fromString(rs.getString(5)), rs.getInt(4));
+        }, "get_athletes", "get_athlete_count");
         this.dbService = dbService;
-    }
-
-    public List<Athlete> getAthletes(int page, int pageSize) {
-        try {
-            CallableStatement stmt = dbService.getConnection().prepareCall("{? = call get_athletes(?, ?)}");
-            stmt.registerOutParameter(1, Types.INTEGER);
-            stmt.setInt(2, page);
-            stmt.setInt(3, pageSize);
-            ResultSet rs = stmt.executeQuery();
-            ArrayList<Athlete> athletes = new ArrayList<>();
-            while (rs.next()) {
-                Athlete a = new Athlete(rs.getInt(1), rs.getString(2), rs.getString(3),
-                        Gender.fromString(rs.getString(5)), rs.getInt(4));
-                athletes.add(a);
-            }
-            return athletes;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public int getAthleteCount() {
-        try {
-            CallableStatement stmt = dbService.getConnection().prepareCall("{? = call get_athlete_count}");
-            stmt.registerOutParameter(1, Types.INTEGER);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return -1;
     }
 
     public void insertAthlete(Athlete newAthlete) {

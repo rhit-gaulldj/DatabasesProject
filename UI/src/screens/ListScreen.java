@@ -1,14 +1,21 @@
 package screens;
 
 import components.ComponentTable;
+import components.LinkButton;
 import components.NavBar;
 import components.NavHandler;
+import databaseServices.AbstractDBService;
+import databaseServices.DBObjectToFieldsHandler;
 import databaseServices.UserService;
+import dbObj.Athlete;
+import dbObj.Gender;
 import util.IntReturnAction;
 import util.SimpleAction;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class ListScreen extends Screen {
 
@@ -24,15 +31,19 @@ public abstract class ListScreen extends Screen {
     private NavHandler handler;
     private UserService userService;
 
-    private SimpleAction onAdd;
-    private IntReturnAction getCount;
+    private AbstractDBService service;
 
-    public ListScreen(int pageSize, NavHandler handler, UserService userService, String objName) {
+    private SimpleAction onAdd;
+    private DBObjectToFieldsHandler toFieldsHandler;
+
+    public ListScreen(int pageSize, NavHandler handler, UserService userService, String objName,
+                      AbstractDBService service) {
         super();
         this.pageSize = pageSize;
         this.objName = objName;
         this.handler = handler;
         this.userService = userService;
+        this.service = service;
     }
 
     public void populatePanel(String[] headers) {
@@ -73,7 +84,30 @@ public abstract class ListScreen extends Screen {
     }
 
     private void myUpdateTable() {
-        updateTable(table, page);
+        //updateTable(table, page);
+        List<Object> objects = service.getObjects(page, pageSize);
+        ArrayList<JComponent[]> rows = new ArrayList<>();
+        for (Object o : objects) {
+            String[] fields = toFieldsHandler.toFields(o);
+            LinkButton editButton = new LinkButton(new Color(5, 138, 255), "Edit", 12);
+            LinkButton deleteButton = new LinkButton(new Color(193, 71, 71), "Delete", 12);
+            editButton.addActionListener(() -> {
+                // TODO: Add edit and delete functionality
+                //edit(a.id());
+            });
+            deleteButton.addActionListener(() -> {
+                //delete(a.id());
+            });
+            // Do +2 to account for edit/delete buttons
+            JComponent[] row = new JComponent[fields.length + 2];
+            for (int i = 0; i < fields.length; i++) {
+                row[i] = new JLabel(fields[i]);
+            }
+            row[row.length - 2] = editButton;
+            row[row.length - 1] = deleteButton;
+            rows.add(row);
+        }
+        table.setCells(rows);
 
         prevPageButton.setEnabled(page > 0);
         int maxPage = (maxEntries - 1) / pageSize;
@@ -91,18 +125,16 @@ public abstract class ListScreen extends Screen {
     }
 
     public void updateAll() {
-        maxEntries = getCount.call();
+        maxEntries = service.getObjectCount();
         myUpdateTable();
     }
 
-    // Child must determine how to update the table
-    protected abstract void updateTable(ComponentTable table, int page);
 
     public void addOnAddHandler(SimpleAction action) {
         onAdd = action;
     }
-    public void addGetCountHandler(IntReturnAction action) {
-        getCount = action;
+    public void addGetFieldsHandler(DBObjectToFieldsHandler toFieldsHandler) {
+        this.toFieldsHandler = toFieldsHandler;
     }
 
 }
