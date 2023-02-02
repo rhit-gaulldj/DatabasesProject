@@ -53,7 +53,7 @@ public class CourseListScreen extends ListScreen {
         int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " +
                 c.name() + "?", "Warning", JOptionPane.YES_NO_OPTION);
         if (dialogResult == JOptionPane.YES_OPTION) {
-            //athleteService.deleteAthlete(ath.id());
+            service.deleteCourse(c.id());
             updateAll();
         }
     }

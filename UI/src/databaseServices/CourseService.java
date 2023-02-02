@@ -75,4 +75,19 @@ public class CourseService extends AbstractDBService {
         return null;
     }
 
+    public void deleteCourse(int id) {
+        try {
+            CallableStatement stmt = dbService.getConnection().prepareCall("{? = call delete_course(?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setInt(2, id);
+            stmt.execute();
+            int status = stmt.getInt(1);
+            if (status != 0) {
+                JOptionPane.showMessageDialog(null, "Error deleting course");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
