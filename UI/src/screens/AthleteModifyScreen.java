@@ -6,9 +6,6 @@ import dbObj.Athlete;
 import dbObj.Gender;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class AthleteModifyScreen extends Screen {
 
@@ -85,8 +82,8 @@ public class AthleteModifyScreen extends Screen {
     }
 
     private void submit() {
-        String fname = firstNameField.getText();
-        String lname = lastNameField.getText();
+        String fname = firstNameField.getText().trim();
+        String lname = lastNameField.getText().trim();
 
         if (fname.length() <= 0 || lname.length() <= 0) {
             JOptionPane.showMessageDialog(null, "First and last name are required");

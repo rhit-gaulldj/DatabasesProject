@@ -87,6 +87,7 @@ public class Main {
         screenDict.put(ScreenTypes.AthleteModify, new AthleteModifyScreen(athleteService, this::switchScreens));
         screenDict.put(ScreenTypes.CourseList, new CourseListScreen(this::switchScreens, userService, courseService));
         screenDict.put(ScreenTypes.MeetList, new MeetListScreen(this::switchScreens, userService, meetService));
+        screenDict.put(ScreenTypes.CourseModify, new CourseModifyScreen(courseService, this::switchScreens));
 
         // Create a panel to contain all the others
         JPanel masterPanel = new JPanel();

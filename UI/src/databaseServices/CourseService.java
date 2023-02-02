@@ -13,6 +13,8 @@ import java.util.List;
 
 public class CourseService extends AbstractDBService {
 
+    private DBConnectionService dbService;
+
     public CourseService(DBConnectionService dbService) {
         super(dbService, new DBObjectCreator() {
             @Override
@@ -20,6 +22,38 @@ public class CourseService extends AbstractDBService {
                 return new Course(rs.getInt(1), rs.getString(2));
             }
         }, "get_courses", "get_course_count");
+        this.dbService = dbService;
+    }
+
+    public void insertCourse(Course newCourse) {
+        try {
+            CallableStatement stmt = dbService.getConnection()
+                    .prepareCall("{? = call insert_course(?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setString(2, newCourse.name());
+            stmt.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // TODO: Move this to the abstract class
+    public Course getCourse(int id) {
+        try {
+            CallableStatement stmt = dbService.getConnection()
+                    .prepareCall("{? = call get_course(?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setInt(2, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new Course(rs.getInt(1), rs.getString(2));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }
