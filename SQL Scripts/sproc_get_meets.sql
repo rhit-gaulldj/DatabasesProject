@@ -13,3 +13,9 @@ CREATE PROCEDURE get_meet_count
 AS
 	SELECT COUNT(*) FROM Meet
 GO
+
+CREATE PROCEDURE get_meet(@id int)
+AS
+	SELECT meet_id, [name], [year]
+	FROM Meet
+	WHERE meet_id = @id
