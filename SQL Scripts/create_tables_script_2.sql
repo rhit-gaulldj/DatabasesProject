@@ -9,12 +9,10 @@ CREATE TABLE Race(
 	distance float NOT NULL,
 	distance_unit varchar(2) NOT NULL,
 	race_level_id int NOT NULL,
-	meet_id int NOT NULL,
-	course_id int NOT NULL
+	meet_id int NOT NULL
 
 	FOREIGN KEY(race_level_id) REFERENCES RaceLevel(race_level_id),
 	FOREIGN KEY(meet_id) REFERENCES Meet(meet_id),
-	FOREIGN KEY(course_id) REFERENCES Course(course_id),
 	CHECK(distance_unit = 'km' OR distance_unit = 'mi' OR distance_unit = 'm')
 )
 
