@@ -10,7 +10,7 @@ FROM Result rs
 JOIN Athlete a ON rs.athlete_id = a.athlete_id
 JOIN Race r ON rs.race_id = r.race_id
 JOIN RaceLevel rl ON r.race_level_id = rl.race_level_id
-JOIN Course c ON r.course_id = c.course_id
 JOIN Meet m ON r.meet_id = m.meet_id
+JOIN Course c ON m.course_id = c.course_id
 WHERE r.distance = 3 AND r.distance_unit = 'mi'
 --ORDER BY rs.[time]
