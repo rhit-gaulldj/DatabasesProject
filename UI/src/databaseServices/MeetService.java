@@ -19,7 +19,7 @@ public class MeetService extends AbstractDBService {
         super(dbService, new DBObjectCreator() {
             @Override
             public Object createObj(ResultSet rs) throws SQLException {
-                return new Meet(rs.getInt(1), rs.getString(2), rs.getInt(3));
+                return new Meet(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getInt(4));
             }
         }, "get_meets", "get_meet_count");
 
@@ -29,10 +29,11 @@ public class MeetService extends AbstractDBService {
     public void insert(Meet obj) {
         try {
             CallableStatement stmt = dbService.getConnection()
-                    .prepareCall("{? = call insert_meet(?, ?)}");
+                    .prepareCall("{? = call insert_meet(?, ?, ?)}");
             stmt.registerOutParameter(1, Types.INTEGER);
             stmt.setString(2, obj.name());
             stmt.setInt(3, obj.year());
+            stmt.setInt(4, obj.courseId());
             stmt.execute();
             int status = stmt.getInt(1);
             if (status != 0) {
@@ -47,11 +48,12 @@ public class MeetService extends AbstractDBService {
     public void update(int id, Meet newObj) {
         try {
             CallableStatement stmt = dbService.getConnection()
-                    .prepareCall("{? = call update_meet(?, ?, ?)}");
+                    .prepareCall("{? = call update_meet(?, ?, ?, ?)}");
             stmt.registerOutParameter(1, Types.INTEGER);
             stmt.setInt(2, id);
             stmt.setString(3, newObj.name());
             stmt.setInt(4, newObj.year());
+            stmt.setInt(5, newObj.courseId());
             stmt.execute();
             int status = stmt.getInt(1);
             if (status != 0) {
@@ -71,7 +73,7 @@ public class MeetService extends AbstractDBService {
             stmt.setInt(2, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return new Meet(rs.getInt(1), rs.getString(2), rs.getInt(3));
+                return new Meet(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getInt(4));
             }
 
         } catch (SQLException e) {

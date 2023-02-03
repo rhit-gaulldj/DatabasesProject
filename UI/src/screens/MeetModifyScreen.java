@@ -76,14 +76,14 @@ public class MeetModifyScreen extends Screen {
         int year = (int) yearField.getValue();
 
         if (currentId < 0) {
-            Meet m = new Meet(-1, name, year);
+            Meet m = new Meet(-1, name, year, 1);
             service.insert(m);
 
             ScreenOpenArgs args = new ScreenOpenArgs();
             args.add("page", 0);
             navHandler.navigate(ScreenTypes.MeetList, args);
         } else {
-            Meet m = new Meet(currentId, name, year);
+            Meet m = new Meet(currentId, name, year, 1);
             service.update(currentId, m);
             navHandler.navigate(ScreenTypes.MeetList, new ScreenOpenArgs());
         }
