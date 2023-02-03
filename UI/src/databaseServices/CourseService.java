@@ -22,7 +22,7 @@ public class CourseService extends AbstractDBService {
             public Object createObj(ResultSet rs) throws SQLException {
                 return new Course(rs.getInt(1), rs.getString(2));
             }
-        }, "get_courses", "get_course_count");
+        }, "get_courses", "get_course_count", "get_all_courses");
         this.dbService = dbService;
     }
 

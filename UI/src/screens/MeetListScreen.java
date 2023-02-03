@@ -30,7 +30,8 @@ public class MeetListScreen extends ListScreen {
                 Meet m = (Meet) dbObj;
                 return new String[] {
                         m.name(),
-                        Integer.toString(m.year())
+                        Integer.toString(m.year()),
+                        m.courseName()
                 };
             }
         });
@@ -41,7 +42,7 @@ public class MeetListScreen extends ListScreen {
 
     @Override
     public void populatePanel() {
-        super.populatePanel(new String[]{ "Name", "Year", "", "" });
+        super.populatePanel(new String[]{ "Name", "Year", "Course", "", "" });
     }
 
     private void edit(Object obj) {

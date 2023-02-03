@@ -13,3 +13,10 @@ CREATE PROCEDURE get_course_count
 AS
 	SELECT COUNT(*) FROM Course
 GO
+
+ALTER PROCEDURE get_all_courses
+AS
+	SELECT course_id, [name]
+	FROM Course
+	ORDER BY [name] ASC
+GO

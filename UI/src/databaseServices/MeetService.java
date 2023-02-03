@@ -19,9 +19,10 @@ public class MeetService extends AbstractDBService {
         super(dbService, new DBObjectCreator() {
             @Override
             public Object createObj(ResultSet rs) throws SQLException {
-                return new Meet(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getInt(4));
+                return new Meet(rs.getInt(1), rs.getString(2), rs.getInt(3),
+                        rs.getInt(4), rs.getString(5));
             }
-        }, "get_meets", "get_meet_count");
+        }, "get_meets", "get_meet_count", "TODO");
 
         this.dbService = dbService;
     }
@@ -73,7 +74,8 @@ public class MeetService extends AbstractDBService {
             stmt.setInt(2, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return new Meet(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getInt(4));
+                return new Meet(rs.getInt(1), rs.getString(2), rs.getInt(3),
+                        rs.getInt(4), rs.getString(5));
             }
 
         } catch (SQLException e) {

@@ -19,7 +19,7 @@ public class AthleteService extends AbstractDBService {
         super(dbService, (rs) -> {
             return new Athlete(rs.getInt(1), rs.getString(2), rs.getString(3),
                     Gender.fromString(rs.getString(5)), rs.getInt(4));
-        }, "get_athletes", "get_athlete_count");
+        }, "get_athletes", "get_athlete_count", "TODO");
         this.dbService = dbService;
     }
 
