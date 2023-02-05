@@ -90,6 +90,7 @@ public class Main {
         screenDict.put(ScreenTypes.CourseModify, new CourseModifyScreen(courseService, this::switchScreens));
         screenDict.put(ScreenTypes.MeetModify, new MeetModifyScreen(meetService,
                 courseService, this::switchScreens));
+        screenDict.put(ScreenTypes.CourseView, new CourseViewScreen(courseService, this::switchScreens));
 
         // Create a panel to contain all the others
         JPanel masterPanel = new JPanel();

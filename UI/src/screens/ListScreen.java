@@ -5,6 +5,7 @@ import components.LinkButton;
 import components.NavBar;
 import components.NavHandler;
 import databaseServices.AbstractDBService;
+import databaseServices.DBObjectConsumer;
 import databaseServices.DBObjectToFieldsHandler;
 import databaseServices.UserService;
 import util.DeleteAction;
@@ -32,6 +33,8 @@ public abstract class ListScreen extends Screen {
 
     private AbstractDBService service;
 
+    private DBObjectConsumer onFirstClick;
+
     private SimpleAction onAdd;
     private DBObjectToFieldsHandler toFieldsHandler;
     private EditAction edit;
@@ -45,6 +48,10 @@ public abstract class ListScreen extends Screen {
         this.handler = handler;
         this.userService = userService;
         this.service = service;
+    }
+
+    public void setOnFirstClickEvent(DBObjectConsumer onFirstClick) {
+        this.onFirstClick = onFirstClick;
     }
 
     public void populatePanel(String[] headers) {
@@ -89,7 +96,8 @@ public abstract class ListScreen extends Screen {
         ArrayList<JComponent[]> rows = new ArrayList<>();
         for (Object o : objects) {
             String[] fields = toFieldsHandler.toFields(o);
-            LinkButton editButton = new LinkButton(new Color(5, 138, 255), "Edit", 12);
+            final Color blueColor = new Color(5, 138, 255);
+            LinkButton editButton = new LinkButton(blueColor, "Edit", 12);
             LinkButton deleteButton = new LinkButton(new Color(193, 71, 71), "Delete", 12);
             editButton.addActionListener(() -> {
                 edit.edit(o);
@@ -99,7 +107,15 @@ public abstract class ListScreen extends Screen {
             });
             // Do +2 to account for edit/delete buttons
             JComponent[] row = new JComponent[fields.length + 2];
-            for (int i = 0; i < fields.length; i++) {
+
+            boolean doingFirstAsButton = onFirstClick != null;
+            if (doingFirstAsButton) {
+                LinkButton firstButton = new LinkButton(blueColor, fields[0], 12);
+                firstButton.addActionListener(() -> onFirstClick.use(o));
+                row[0] = firstButton;
+            }
+
+            for (int i = (doingFirstAsButton ? 1 : 0); i < fields.length; i++) {
                 row[i] = new JLabel(fields[i]);
             }
             row[row.length - 2] = editButton;

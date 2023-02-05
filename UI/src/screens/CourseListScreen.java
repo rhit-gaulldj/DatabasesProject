@@ -34,6 +34,7 @@ public class CourseListScreen extends ListScreen {
 
         addEditHandler(this::edit);
         addDeleteHandler(this::delete);
+        setOnFirstClickEvent(this::courseClicked);
     }
 
     @Override
@@ -56,5 +57,13 @@ public class CourseListScreen extends ListScreen {
             service.deleteCourse(c.id());
             updateAll();
         }
+    }
+
+    private void courseClicked(Object obj) {
+        Course c = (Course) obj;
+        ScreenOpenArgs args = new ScreenOpenArgs();
+        args.add("name", c.name());
+        args.add("id", c.id());
+        navHandler.navigate(ScreenTypes.CourseView, args);
     }
 }

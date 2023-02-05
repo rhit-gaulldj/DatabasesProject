@@ -1,8 +1,6 @@
 package databaseServices;
 
-import dbObj.Athlete;
-import dbObj.Course;
-import dbObj.Gender;
+import dbObj.*;
 
 import javax.swing.*;
 import java.sql.CallableStatement;
@@ -90,4 +88,22 @@ public class CourseService extends AbstractDBService {
         }
     }
 
+    public DistancePair[] getCourseDistances(int courseId) {
+        try {
+            CallableStatement stmt = dbService.getConnection().prepareCall("{? = call get_dists_for_course(?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setInt(2, courseId);
+            ResultSet rs = stmt.executeQuery();
+            List<DistancePair> result = new ArrayList<>();
+            while (rs.next()) {
+                result.add(new DistancePair(rs.getDouble(1), rs.getString(2)));
+            }
+            DistancePair[] arr = new DistancePair[result.size()];
+            result.toArray(arr);
+            return arr;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

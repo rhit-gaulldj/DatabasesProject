@@ -2,6 +2,7 @@ package databaseServices;
 
 import dbObj.Athlete;
 import dbObj.Gender;
+import dbObj.RaceLevel;
 
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
@@ -79,6 +80,24 @@ public class AbstractDBService {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    public RaceLevel[] getRaceLevels() {
+        try {
+            CallableStatement stmt = dbService.getConnection().prepareCall("{? = call get_race_levels}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            ResultSet rs = stmt.executeQuery();
+            List<RaceLevel> result = new ArrayList<>();
+            while (rs.next()) {
+                result.add(new RaceLevel(rs.getInt(1), rs.getString(2)));
+            }
+            RaceLevel[] arr = new RaceLevel[result.size()];
+            result.toArray(arr);
+            return arr;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }
