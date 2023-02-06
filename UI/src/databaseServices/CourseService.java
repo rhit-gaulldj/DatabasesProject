@@ -106,4 +106,24 @@ public class CourseService extends AbstractDBService {
         }
         return null;
     }
+
+    public RaceLevel[] getRaceLevelsForCourse(int courseId) {
+        try {
+            CallableStatement stmt = dbService.getConnection()
+                    .prepareCall("{? = call get_racelevels_for_course(?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setInt(2, courseId);
+            ResultSet rs = stmt.executeQuery();
+            List<RaceLevel> result = new ArrayList<>();
+            while (rs.next()) {
+                result.add(new RaceLevel(rs.getInt(1), rs.getString(2)));
+            }
+            RaceLevel[] arr = new RaceLevel[result.size()];
+            result.toArray(arr);
+            return arr;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
