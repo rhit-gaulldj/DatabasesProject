@@ -10,15 +10,13 @@ BEGIN
 		RAISERROR('Args cannot be null', 14, 1)
 		RETURN 1
 	END
-	-- If the course ID is < 0, we'll do for all courses
-	-- But if course ID is >= 0, need to check that it exists
-	IF (@CourseID >= 0 and (SELECT COUNT(*) FROM Course WHERE course_id = @CourseID) <= 0) BEGIN
+	IF ((SELECT COUNT(*) FROM Course WHERE course_id = @CourseID) <= 0) BEGIN
 		RAISERROR('Course does not exist', 14, 1)
 		RETURN 2
 	END
 
-	-- Race level must exist
-	IF ((SELECT COUNT(*) FROM RaceLevel WHERE race_level_id = @RaceLevelId) < 1) BEGIN
+	-- Race level can be < 0 to allow for any race level
+	IF (@RaceLevelId >= 0 AND (SELECT COUNT(*) FROM RaceLevel WHERE race_level_id = @RaceLevelId) < 1) BEGIN
 		RAISERROR('Race level does not exist', 14, 1)
 		RETURN 3
 	END
@@ -26,7 +24,7 @@ BEGIN
 	IF (@AllowDupAthletes = 1)
 		SELECT TOP(@NumResults) v1.Athlete, v1.[FormattedTime], v1.[Meet], v1.[Year], v1.[Grade]
 			FROM all_times_view v1
-			WHERE v1.course_id = @CourseID AND v1.race_level_id = @RaceLevelId AND
+			WHERE v1.course_id = @CourseID AND (race_level_id = @RaceLevelId OR @RaceLevelId < 0) AND
 				v1.distance = @Distance AND v1.distance_unit = @DistanceUnit
 			ORDER BY v1.[time] ASC
 	ELSE
@@ -34,7 +32,7 @@ BEGIN
 			FROM all_times_view v1
 			JOIN (SELECT athlete_id, MIN([time]) as min_time
 					FROM all_times_view
-					WHERE course_id = @CourseID AND race_level_id = @RaceLevelId AND
+					WHERE course_id = @CourseID AND (race_level_id = @RaceLevelId OR @RaceLevelId < 0) AND
 						distance = @Distance AND distance_unit = @DistanceUnit
 					GROUP BY athlete_id
 					) v2 ON v1.athlete_id = v2.athlete_id AND v1.[time] = v2.[min_time]

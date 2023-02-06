@@ -125,7 +125,12 @@ public class CourseViewScreen extends Screen {
 
     private void resetFields() {
         RaceLevel[] levels = courseService.getRaceLevelsForCourse(courseId);
-        raceLevelField.setModel(new DefaultComboBoxModel<>(levels));
+        RaceLevel[] inLevels = new RaceLevel[levels.length + 1];
+        inLevels[0] = new RaceLevel(-1, "Any");
+        for (int i = 0; i < levels.length; i++) {
+            inLevels[i + 1] = levels[i];
+        }
+        raceLevelField.setModel(new DefaultComboBoxModel<>(inLevels));
         // If varsity or F/S option, select those. Otherwise, just let it be the first level
         boolean hasVarsity = false;
         for (int i = 0; i < levels.length; i++) {
