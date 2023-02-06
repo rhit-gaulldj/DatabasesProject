@@ -2,7 +2,7 @@ USE TeamXCDB
 GO
 
 ALTER PROCEDURE top_results_by_course
-	(@CourseID int, @NumResults int, @AllowDupAthletes bit, @RaceLevelId int, @Distance int, @DistanceUnit char(2))
+	(@CourseID int, @NumResults int, @AllowDupAthletes bit, @RaceLevelId int, @Distance float, @DistanceUnit varchar(5))
 AS
 BEGIN
 	IF (@CourseId is null OR @NumResults is null OR @AllowDupAthletes is null
