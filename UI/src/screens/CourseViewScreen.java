@@ -12,6 +12,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,6 +31,8 @@ public class CourseViewScreen extends Screen {
     private JSpinner numResultsField;
     private JComboBox<DistancePair> distanceField;
 
+    private static final int NUM_FIELDS = 5;
+
     private ComponentTable table;
 
     public CourseViewScreen(CourseService courseService, NavHandler navHandler) {
@@ -37,8 +42,9 @@ public class CourseViewScreen extends Screen {
 
     @Override
     public void populatePanel() {
-        super.createPanel(8, 1);
+        super.createPanel();
         JPanel parent = super.getPanel();
+        super.setLayout(new BoxLayout(parent, BoxLayout.Y_AXIS));
 
         LinkButton backButton = new LinkButton(new Color(5, 138, 255), "<< Back", 12);
         backButton.addActionListener(() -> navHandler.navigate(ScreenTypes.CourseList, new ScreenOpenArgs()));
@@ -48,8 +54,11 @@ public class CourseViewScreen extends Screen {
         nameLabel.setFont(new Font("Arial", Font.BOLD, 20));
         parent.add(nameLabel);
 
-        allowDuplicatesField = new JCheckBox("Allow multiple results from the same athlete", false);
-        parent.add(allowDuplicatesField);
+        JPanel duplicateBoxPanel = new JPanel();
+        allowDuplicatesField = new JCheckBox("", false);
+        duplicateBoxPanel.add(allowDuplicatesField);
+        duplicateBoxPanel.add(new JLabel("Allow multiple results from the same athlete"));
+        parent.add(duplicateBoxPanel);
 
         JPanel raceLevelPanel = new JPanel();
         raceLevelField = new JComboBox<>();
@@ -74,7 +83,7 @@ public class CourseViewScreen extends Screen {
         resultsButton.addActionListener(e -> showResults());
         parent.add(resultsButton);
 
-        table = new ComponentTable(new String[0]);
+        table = new ComponentTable(new String[] { "Athlete", "Time", "Meet", "Year", "Grade" });
         parent.add(table);
     }
 
@@ -90,7 +99,28 @@ public class CourseViewScreen extends Screen {
     }
 
     private void showResults() {
+        DistancePair dist = (DistancePair) distanceField.getSelectedItem();
+        RaceLevel rl = (RaceLevel) raceLevelField.getSelectedItem();
+        ResultSet rs = courseService.getTopResultsPerCourse(courseId, (int) numResultsField.getValue(),
+                allowDuplicatesField.isSelected(), rl.id(), dist);
 
+        ArrayList<JComponent[]> rows = new ArrayList<>();
+        try {
+            while (rs.next()) {
+                JComponent[] row = new JComponent[NUM_FIELDS];
+                for (int i = 0; i < NUM_FIELDS; i++) {
+                    row[i] = new JLabel(rs.getString(i + 1));
+                }
+                rows.add(row);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        table.setCells(rows);
+
+        getPanel().repaint();
+        getPanel().revalidate();
     }
 
     private void resetFields() {

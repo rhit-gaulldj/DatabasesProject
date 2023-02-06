@@ -126,4 +126,24 @@ public class CourseService extends AbstractDBService {
         }
         return null;
     }
+
+    public ResultSet getTopResultsPerCourse(int courseId, int numResults, boolean allowDupes,
+                                            int raceLevelId, DistancePair distance) {
+        try {
+            CallableStatement stmt = dbService.getConnection()
+                    .prepareCall("{? = call top_results_by_course(?, ?, ?, ?, ?, ?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setInt(2, courseId);
+            stmt.setInt(3, numResults);
+            stmt.setBoolean(4, allowDupes);
+            stmt.setInt(5, raceLevelId);
+            stmt.setDouble(6, distance.dist());
+            stmt.setString(7, distance.units());;
+            return stmt.executeQuery();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
