@@ -35,3 +35,4 @@ GRANT EXECUTE ON get_racelevels_for_course TO TeamXCDB;
 GRANT EXECUTE ON top_results_by_course TO TeamXCDB;
 GRANT EXECUTE ON get_splits TO TeamXCDB;
 GRANT EXECUTE ON get_races_for_meet TO TeamXCDB;
+GRANT EXECUTE ON get_results_for_race TO TeamXCDB;

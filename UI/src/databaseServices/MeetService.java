@@ -122,4 +122,28 @@ public class MeetService extends AbstractDBService {
         return null;
     }
 
+    public RaceResult[] getResultsForRace(int raceId) {
+        try {
+            CallableStatement stmt = dbService.getConnection()
+                    .prepareCall("{? = call get_results_for_race(?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setInt(2, raceId);
+            ResultSet rs = stmt.executeQuery();
+            List<RaceResult> result = new ArrayList<>();
+            while (rs.next()) {
+                result.add(new RaceResult(rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getInt(4),
+                        rs.getString(5)));
+            }
+            RaceResult[] arr = new RaceResult[result.size()];
+            result.toArray(arr);
+            return arr;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
