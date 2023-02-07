@@ -29,6 +29,8 @@ public class MeetViewScreen extends Screen {
     private JComboBox<Race> raceField;
 
     private ComponentTable table;
+    private JScrollPane tableScrollPane;
+    private static final int SCROLL_PANE_HEIGHT = 450; // Simply hardcoded
 
     public MeetViewScreen(MeetService meetService, CourseService courseService, NavHandler navHandler) {
         this.meetService = meetService;
@@ -74,7 +76,9 @@ public class MeetViewScreen extends Screen {
         parent.add(modifyRaceButtonPanel);
 
         table = new ComponentTable(new String[]{"Number", "Name", "Time", "Grade", "Splits", ""});
-        parent.add(table);
+        tableScrollPane = new JScrollPane();
+        tableScrollPane.setViewportView(table);
+        parent.add(tableScrollPane);
     }
 
     @Override
@@ -112,6 +116,9 @@ public class MeetViewScreen extends Screen {
 
         getPanel().repaint();
         getPanel().revalidate();
+
+        tableScrollPane.setPreferredSize(new Dimension((int) table.getPreferredSize().getWidth() + 20,
+                SCROLL_PANE_HEIGHT));
     }
 
     private void resetFields() {
