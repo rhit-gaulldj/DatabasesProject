@@ -91,6 +91,7 @@ public class Main {
         screenDict.put(ScreenTypes.MeetModify, new MeetModifyScreen(meetService,
                 courseService, this::switchScreens));
         screenDict.put(ScreenTypes.CourseView, new CourseViewScreen(courseService, this::switchScreens));
+        screenDict.put(ScreenTypes.MeetView, new MeetViewScreen(meetService, courseService, this::switchScreens));
 
         // Create a panel to contain all the others
         JPanel masterPanel = new JPanel();
@@ -215,10 +216,11 @@ public class Main {
 
 
     private void onLoginSuccess(String sessionId) {
-        ((TestScreen) screenDict.get(ScreenTypes.Test)).setSessionId(sessionId);
+        //((TestScreen) screenDict.get(ScreenTypes.Test)).setSessionId(sessionId);
         //switchScreens(ScreenTypes.Test);
         userService.setSessionId(sessionId);
-        switchScreens(ScreenTypes.AthletesList, new ScreenOpenArgs());
+        //switchScreens(ScreenTypes.AthletesList, new ScreenOpenArgs());
+        switchScreens(ScreenTypes.MeetList, new ScreenOpenArgs());
     }
     private void onLogout() {
         JOptionPane.showMessageDialog(null, "You have logged out");

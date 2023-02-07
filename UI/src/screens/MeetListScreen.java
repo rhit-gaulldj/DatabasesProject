@@ -38,6 +38,7 @@ public class MeetListScreen extends ListScreen {
 
         addEditHandler(this::edit);
         addDeleteHandler(this::delete);
+        setOnFirstClickEvent(this::meetClicked);
     }
 
     @Override
@@ -60,5 +61,15 @@ public class MeetListScreen extends ListScreen {
             service.delete(m.id());
             updateAll();
         }
+    }
+
+    private void meetClicked(Object obj) {
+        Meet m = (Meet) obj;
+        ScreenOpenArgs args = new ScreenOpenArgs();
+        args.add("name", m.name());
+        args.add("year", m.year());
+        args.add("course_id", m.courseId());
+        args.add("id", m.id());
+        navHandler.navigate(ScreenTypes.MeetView, args);
     }
 }
