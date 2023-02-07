@@ -34,6 +34,8 @@ public class CourseViewScreen extends Screen {
     private static final int NUM_FIELDS = 5;
 
     private ComponentTable table;
+    private JScrollPane tableScrollPane;
+    private int scrollPaneHeight;
 
     public CourseViewScreen(CourseService courseService, NavHandler navHandler) {
         this.navHandler = navHandler;
@@ -67,7 +69,7 @@ public class CourseViewScreen extends Screen {
         parent.add(raceLevelPanel);
 
         JPanel numResultsPanel = new JPanel();
-        numResultsField = new JSpinner(new SpinnerNumberModel(10, 5, 25, 5));
+        numResultsField = new JSpinner(new SpinnerNumberModel(10, 5, 100, 5));
         numResultsField.setEditor(new JSpinner.NumberEditor(numResultsField, "#"));
         numResultsPanel.add(new JLabel("Number of Results:"));
         numResultsPanel.add(numResultsField);
@@ -84,7 +86,9 @@ public class CourseViewScreen extends Screen {
         parent.add(resultsButton);
 
         table = new ComponentTable(new String[] { "Athlete", "Time", "Meet", "Year", "Grade" });
-        parent.add(table);
+        tableScrollPane = new JScrollPane();
+        tableScrollPane.setViewportView(table);
+        parent.add(tableScrollPane);
     }
 
     @Override
@@ -96,6 +100,11 @@ public class CourseViewScreen extends Screen {
         resetFields();
         // Populate with initial results
         showResults();
+
+        // Set the scroll pane to have a preferred height of whatever the size of the table is with
+        // the default of 10 elements
+        scrollPaneHeight = (int) table.getPreferredSize().getHeight() + 15;
+        updateScrollPane();
     }
 
     private void showResults() {
@@ -106,11 +115,13 @@ public class CourseViewScreen extends Screen {
 
         ArrayList<JComponent[]> rows = new ArrayList<>();
         try {
+            int count = 1;
             while (rs.next()) {
-                JComponent[] row = new JComponent[NUM_FIELDS];
-                for (int i = 0; i < NUM_FIELDS; i++) {
-                    row[i] = new JLabel(rs.getString(i + 1));
+                JComponent[] row = new JComponent[NUM_FIELDS + 1];
+                for (int i = 1; i < NUM_FIELDS + 1; i++) {
+                    row[i] = new JLabel(rs.getString(i));
                 }
+                row[0] = new JLabel(Integer.toString(count++));
                 rows.add(row);
             }
 
@@ -119,8 +130,15 @@ public class CourseViewScreen extends Screen {
         }
         table.setCells(rows);
 
+        updateScrollPane();
+
         getPanel().repaint();
         getPanel().revalidate();
+    }
+
+    private void updateScrollPane() {
+        tableScrollPane.setPreferredSize(new Dimension((int) table.getPreferredSize().getWidth() + 20,
+                scrollPaneHeight));
     }
 
     private void resetFields() {
