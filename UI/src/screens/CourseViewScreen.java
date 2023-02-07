@@ -31,7 +31,7 @@ public class CourseViewScreen extends Screen {
     private JSpinner numResultsField;
     private JComboBox<DistancePair> distanceField;
 
-    private static final int NUM_FIELDS = 5;
+    private static final int NUM_FIELDS = 6;
 
     private ComponentTable table;
     private JScrollPane tableScrollPane;
@@ -85,7 +85,7 @@ public class CourseViewScreen extends Screen {
         resultsButton.addActionListener(e -> showResults());
         parent.add(resultsButton);
 
-        table = new ComponentTable(new String[] { "Number", "Athlete", "Time", "Meet", "Year", "Grade" });
+        table = new ComponentTable(new String[] { "Number", "Athlete", "Time", "Meet", "Year", "Grade", "Splits" });
         tableScrollPane = new JScrollPane();
         tableScrollPane.setViewportView(table);
         parent.add(tableScrollPane);

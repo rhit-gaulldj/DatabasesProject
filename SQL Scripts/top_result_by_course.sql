@@ -22,13 +22,13 @@ BEGIN
 	END
 
 	IF (@AllowDupAthletes = 1)
-		SELECT TOP(@NumResults) v1.Athlete, v1.[FormattedTime], v1.[Meet], v1.[Year], v1.[Grade]
+		SELECT TOP(@NumResults) v1.Athlete, v1.[FormattedTime], v1.[Meet], v1.[Year], v1.[Grade], v1.Splits
 			FROM all_times_view v1
 			WHERE v1.course_id = @CourseID AND (race_level_id = @RaceLevelId OR @RaceLevelId < 0) AND
 				v1.distance = @Distance AND v1.distance_unit = @DistanceUnit
 			ORDER BY v1.[time] ASC
 	ELSE
-		SELECT TOP(@NumResults) v1.Athlete, v1.[FormattedTime], v1.[Meet], v1.[Year], v1.[Grade]
+		SELECT TOP(@NumResults) v1.Athlete, v1.[FormattedTime], v1.[Meet], v1.[Year], v1.[Grade], v1.Splits
 			FROM all_times_view v1
 			JOIN (SELECT athlete_id, MIN([time]) as min_time
 					FROM all_times_view

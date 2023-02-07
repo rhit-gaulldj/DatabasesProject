@@ -138,7 +138,7 @@ public class CourseService extends AbstractDBService {
             stmt.setBoolean(4, allowDupes);
             stmt.setInt(5, raceLevelId);
             stmt.setDouble(6, distance.dist());
-            stmt.setString(7, distance.units());;
+            stmt.setString(7, distance.units());
             return stmt.executeQuery();
 
         } catch (SQLException e) {

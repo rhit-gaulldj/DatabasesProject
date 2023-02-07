@@ -1,9 +1,9 @@
 USE [TeamXCDB]
 GO
 
-CREATE VIEW ThreeMileResults AS
+ALTER VIEW ThreeMileResults AS
 SELECT a.first_name AS [First Name], a.last_name AS [Last Name], 
-	CONVERT(varchar, DATEADD(ms, rs.[time] * 1000, 0), 108) AS [Time],
+	SUBSTRING(CONVERT(varchar, DATEADD(ms, rs.[time] * 1000, 0), 108), 4, 5) AS [Time],
 	c.[name] AS Course, m.[name] AS Meet, m.[year] as [Year], rl.[name] AS [Race Level],
 	m.[year] - a.grad_year + 13 AS [Grade]
 FROM Result rs
