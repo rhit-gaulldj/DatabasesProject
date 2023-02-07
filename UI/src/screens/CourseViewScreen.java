@@ -85,7 +85,7 @@ public class CourseViewScreen extends Screen {
         resultsButton.addActionListener(e -> showResults());
         parent.add(resultsButton);
 
-        table = new ComponentTable(new String[] { "Athlete", "Time", "Meet", "Year", "Grade" });
+        table = new ComponentTable(new String[] { "Number", "Athlete", "Time", "Meet", "Year", "Grade" });
         tableScrollPane = new JScrollPane();
         tableScrollPane.setViewportView(table);
         parent.add(tableScrollPane);
