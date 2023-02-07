@@ -5,6 +5,8 @@ import components.NavHandler;
 import databaseServices.CourseService;
 import databaseServices.MeetService;
 import dbObj.Course;
+import dbObj.Race;
+import dbObj.RaceLevel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,6 +22,7 @@ public class MeetViewScreen extends Screen {
 
     private JLabel titleLabel;
     private JLabel courseNameLabel;
+    private JComboBox<Race> raceField;
 
     public MeetViewScreen(MeetService meetService, CourseService courseService, NavHandler navHandler) {
         this.meetService = meetService;
@@ -50,6 +53,12 @@ public class MeetViewScreen extends Screen {
         courseNameLabel = new JLabel("COURSE NAME");
         courseNameLabel.setFont(new Font("Arial", Font.BOLD, 15));
         parent.add(courseNameLabel);
+
+        JPanel raceLevelPanel = new JPanel();
+        raceField = new JComboBox<>();
+        raceLevelPanel.add(new JLabel("Race:"));
+        raceLevelPanel.add(raceField);
+        parent.add(raceLevelPanel);
     }
 
     @Override
@@ -59,5 +68,29 @@ public class MeetViewScreen extends Screen {
         titleLabel.setText(args.get("name").toString() + " (" + args.get("year").toString() + ")");
         Course course = courseService.getCourse((int) args.get("course_id"));
         courseNameLabel.setText("Course: " + course.name());
+
+        resetFields();
+    }
+
+    private void resetFields() {
+        Race[] races = meetService.getRacesForMeet(meetId);
+        raceField.setModel(new DefaultComboBoxModel<>(races));
+        // If varsity or F/S option, select those. Otherwise, just let it be the first level
+        boolean hasVarsity = false;
+        for (int i = 0; i < races.length; i++) {
+            if (races[i].raceLevel().name().equals("Varsity")) {
+                hasVarsity = true;
+                raceField.setSelectedIndex(i);
+                break;
+            }
+        }
+        if (!hasVarsity) {
+            for (int i = 0; i < races.length; i++) {
+                if (races[i].raceLevel().name().equals("F/S")) {
+                    raceField.setSelectedIndex(i);
+                    break;
+                }
+            }
+        }
     }
 }

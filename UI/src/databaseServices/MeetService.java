@@ -1,7 +1,6 @@
 package databaseServices;
 
-import dbObj.Course;
-import dbObj.Meet;
+import dbObj.*;
 
 import javax.swing.*;
 import java.sql.CallableStatement;
@@ -98,6 +97,29 @@ public class MeetService extends AbstractDBService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public Race[] getRacesForMeet(int meetId) {
+        try {
+            CallableStatement stmt = dbService.getConnection()
+                    .prepareCall("{? = call get_races_for_meet(?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setInt(2, meetId);
+            ResultSet rs = stmt.executeQuery();
+            List<Race> result = new ArrayList<>();
+            while (rs.next()) {
+                result.add(new Race(rs.getInt(1),
+                        new DistancePair(rs.getFloat(2), rs.getString(3)),
+                        new RaceLevel(rs.getInt(4), rs.getString(5)),
+                        rs.getInt(6)));
+            }
+            Race[] arr = new Race[result.size()];
+            result.toArray(arr);
+            return arr;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }
