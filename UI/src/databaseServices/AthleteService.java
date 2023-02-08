@@ -98,7 +98,7 @@ public class AthleteService extends AbstractDBService {
     public Athlete[] getAthletesNotInRace(int raceId) {
         try {
             CallableStatement stmt = dbService.getConnection()
-                    .prepareCall("{? = call ...(?)}");
+                    .prepareCall("{? = call get_athletes_not_in_race(?)}");
             stmt.registerOutParameter(1, Types.INTEGER);
             stmt.setInt(2, raceId);
             ResultSet rs = stmt.executeQuery();

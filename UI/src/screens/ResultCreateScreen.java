@@ -49,6 +49,14 @@ public class ResultCreateScreen extends Screen {
         athleteRow.add(new JLabel("Athlete: "));
         athleteRow.add(athleteField);
         parent.add(athleteRow);
+
+        JPanel bottomRow = new JPanel();
+        JButton submitButton = new JButton("Submit");
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(e -> goBack());
+        bottomRow.add(cancelButton);
+        bottomRow.add(submitButton);
+        parent.add(bottomRow);
     }
 
     @Override

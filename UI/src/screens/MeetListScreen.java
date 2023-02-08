@@ -56,7 +56,7 @@ public class MeetListScreen extends ListScreen {
         Meet m = (Meet) obj;
 
         int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " +
-                m.name() + "?", "Warning", JOptionPane.YES_NO_OPTION);
+                m.name() + "? THIS WILL DELETE ALL ASSOCIATED RACES AND RESULTS!", "Warning", JOptionPane.YES_NO_OPTION);
         if (dialogResult == JOptionPane.YES_OPTION) {
             service.delete(m.id());
             updateAll();
