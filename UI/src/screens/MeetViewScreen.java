@@ -20,6 +20,9 @@ public class MeetViewScreen extends Screen {
     private CourseService courseService;
 
     private int meetId;
+    private String meetName;
+    private int meetYear;
+    private int courseId;
     private Race currentRace;
 
     private NavHandler navHandler;
@@ -51,7 +54,14 @@ public class MeetViewScreen extends Screen {
         LinkButton backButton = new LinkButton(new Color(5, 138, 255), "<< Back", 12);
         backButton.addActionListener(() -> navHandler.navigate(ScreenTypes.MeetList, new ScreenOpenArgs()));
         JButton addNewRaceButton = new JButton("Add New Race");
-        addNewRaceButton.addActionListener(e -> System.out.println("Add new race"));
+        addNewRaceButton.addActionListener(e -> {
+            ScreenOpenArgs args = new ScreenOpenArgs();
+            args.add("meet_id", meetId);
+            args.add("meet_name", meetName);
+            args.add("meet_year", meetYear);
+            args.add("course_id", courseId);
+            navHandler.navigate(ScreenTypes.RaceCreate, args);
+        });
         topPanel.add(backButton);
         topPanel.add(addNewRaceButton);
         parent.add(topPanel);
@@ -86,9 +96,12 @@ public class MeetViewScreen extends Screen {
     @Override
     public void openScreen(ScreenOpenArgs args) {
         meetId = (int) args.get("id");
+        meetName = args.get("name").toString();
+        meetYear =  (int) args.get("year");
+        courseId = (int) args.get("course_id");
 
-        titleLabel.setText(args.get("name").toString() + " (" + args.get("year").toString() + ")");
-        Course course = courseService.getCourse((int) args.get("course_id"));
+        titleLabel.setText(meetName + " (" + meetYear + ")");
+        Course course = courseService.getCourse(courseId);
         courseNameLabel.setText("Course: " + course.name());
 
         resetFields();

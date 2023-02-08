@@ -11,4 +11,6 @@ public enum ScreenTypes {
     MeetModify,
     CourseView,
     MeetView,
+    RaceCreate,
+    ResultCreate,
 }
