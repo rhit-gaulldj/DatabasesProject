@@ -6,6 +6,8 @@ import components.TimeInput;
 import databaseServices.AthleteService;
 import databaseServices.RaceService;
 import dbObj.Athlete;
+import dbObj.Split;
+import dbObj.Time;
 
 import javax.swing.*;
 import javax.xml.transform.Result;
@@ -82,6 +84,7 @@ public class ResultCreateScreen extends Screen {
 
         JPanel bottomRow = new JPanel();
         JButton submitButton = new JButton("Submit");
+        submitButton.addActionListener(e -> submit());
         JButton cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(e -> goBack());
         bottomRow.add(cancelButton);
@@ -101,6 +104,31 @@ public class ResultCreateScreen extends Screen {
         titleLabel.setText("Add Result for " + raceName + " Race in " + meetName + " (" + meetYear + ")");
 
         resetFields();
+    }
+
+    private void submit() {
+        if (athleteField.getSelectedItem() == null) {
+            JOptionPane.showMessageDialog(null, "Must select a valid athlete");
+            return;
+        }
+        Time totalTime = timeField.getTime();
+        if (totalTime == null) {
+            JOptionPane.showMessageDialog(null, "Must provide a valid time");
+            return;
+        }
+        // Get all the splits
+        ArrayList<Split> splits = new ArrayList<>();
+        for (int i = 0; i < splitFields.size(); i++) {
+            Split s = splitFields.get(i).getSplit();
+            if (s == null || s.dist() == null || s.time() == null) {
+                JOptionPane.showMessageDialog(null, "Must fill in all splits");
+            }
+            splits.add(s);
+        }
+
+        raceService.addResult(raceId, ((Athlete) athleteField.getSelectedItem()).id(),
+                timeField.getTime(), splits);
+        goBack();
     }
 
     private void goBack() {

@@ -58,6 +58,9 @@ public class SplitInput extends JPanel {
     }
 
     public Split getSplit() {
+        if (distanceField.getText().length() <= 0) {
+            return null;
+        }
         DistancePair dist = new DistancePair(Float.parseFloat(distanceField.getText()),
                 unitsField.getSelectedItem().toString());
         return new Split(dist, timeField.getTime());

@@ -63,9 +63,15 @@ public class TimeInput extends JPanel {
     }
 
     public Time getTime() {
+        if (minsField.getText().length() <= 0 || secsField.getText().length() <= 0) {
+            return null;
+        }
         int mins = Integer.parseInt(minsField.getText());
         int secs = Integer.parseInt(secsField.getText());
-        int fraction = Integer.parseInt(fractionalSecsField.getText());
+        int fraction = 0;
+        if (fractionalSecsField.getText().length() > 0) {
+            fraction = Integer.parseInt(fractionalSecsField.getText());
+        }
         return new Time(mins, secs, fraction);
     }
 
