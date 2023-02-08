@@ -3,6 +3,7 @@ package databaseServices;
 import dbObj.*;
 
 import javax.swing.*;
+import javax.xml.transform.Result;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -146,4 +147,23 @@ public class MeetService extends AbstractDBService {
         return null;
     }
 
+    public RaceLevel[] getUnusedLevelForMeet(int meetId) {
+        try {
+            CallableStatement stmt = dbService.getConnection()
+                    .prepareCall("{? = call get_unused_levels_for_meet(?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setInt(2, meetId);
+            ResultSet rs = stmt.executeQuery();
+            ArrayList<RaceLevel> result = new ArrayList<>();
+            while (rs.next()) {
+                result.add(new RaceLevel(rs.getInt(1), rs.getString(2)));
+            }
+            RaceLevel[] arr = new RaceLevel[result.size()];
+            result.toArray(arr);
+            return arr;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

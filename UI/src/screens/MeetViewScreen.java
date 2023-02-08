@@ -32,6 +32,7 @@ public class MeetViewScreen extends Screen {
     private JComboBox<Race> raceField;
     private JButton newResultButton;
     private JButton deleteRaceButton;
+    private JButton addNewRaceButton;
 
     private ComponentTable table;
     private JScrollPane tableScrollPane;
@@ -53,7 +54,7 @@ public class MeetViewScreen extends Screen {
         JPanel topPanel = new JPanel();
         LinkButton backButton = new LinkButton(new Color(5, 138, 255), "<< Back", 12);
         backButton.addActionListener(() -> navHandler.navigate(ScreenTypes.MeetList, new ScreenOpenArgs()));
-        JButton addNewRaceButton = new JButton("Add New Race");
+        addNewRaceButton = new JButton("Add New Race");
         addNewRaceButton.addActionListener(e -> {
             ScreenOpenArgs args = new ScreenOpenArgs();
             args.add("meet_id", meetId);
@@ -103,6 +104,10 @@ public class MeetViewScreen extends Screen {
         titleLabel.setText(meetName + " (" + meetYear + ")");
         Course course = courseService.getCourse(courseId);
         courseNameLabel.setText("Course: " + course.name());
+
+        RaceLevel[] availableLevels = meetService.getUnusedLevelForMeet(meetId);
+        // If length is 0, then cannot create any new races
+        addNewRaceButton.setEnabled(availableLevels.length > 0);
 
         resetFields();
         updateTable();
