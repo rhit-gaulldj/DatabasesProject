@@ -197,7 +197,8 @@ public class MeetViewScreen extends Screen {
 
     private void deleteRace() {
         int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete the " +
-                currentRace.toString() + " race for " + meetName + " (" + meetYear + ")?",
+                currentRace.toString() + " race for " + meetName + " (" + meetYear + ")? " +
+                "THIS WILL DELETE ALL RESULTS ASSOCIATED WITH THIS RACE!",
                 "Warning", JOptionPane.YES_NO_OPTION);
         if (dialogResult == JOptionPane.YES_OPTION) {
             raceService.deleteRace(currentRace.id());
