@@ -1,6 +1,7 @@
 package screens;
 
 import components.NavHandler;
+import components.SplitInput;
 import components.TimeInput;
 import databaseServices.AthleteService;
 import databaseServices.RaceService;
@@ -9,6 +10,7 @@ import dbObj.Athlete;
 import javax.swing.*;
 import javax.xml.transform.Result;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class ResultCreateScreen extends Screen {
 
@@ -26,12 +28,16 @@ public class ResultCreateScreen extends Screen {
     private JLabel titleLabel;
     private JComboBox<Athlete> athleteField;
     private TimeInput timeField;
+    private ArrayList<SplitInput> splitFields;
+    private JPanel splitFieldContainer;
 
     public ResultCreateScreen(RaceService raceService, AthleteService athleteService,
                               NavHandler navHandler) {
         this.navHandler = navHandler;
         this.raceService = raceService;
         this.athleteService = athleteService;
+
+        splitFields = new ArrayList<>();
     }
 
     @Override
@@ -57,6 +63,22 @@ public class ResultCreateScreen extends Screen {
         timeRow.add(new JLabel("Time: "));
         timeRow.add(timeField);
         parent.add(timeRow);
+
+        JPanel splitTitleContainer = new JPanel();
+        splitTitleContainer.add(new JLabel("Splits:"));
+        parent.add(splitTitleContainer);
+
+        JPanel splitRow = new JPanel();
+        splitRow.setLayout(new BoxLayout(splitRow, BoxLayout.Y_AXIS));
+        splitFieldContainer = new JPanel();
+        splitFieldContainer.setLayout(new BoxLayout(splitFieldContainer, BoxLayout.Y_AXIS));
+        splitRow.add(splitFieldContainer);
+        JPanel addSplitButtonContainer = new JPanel();
+        JButton addSplitButton = new JButton("Add New Split");
+        addSplitButton.addActionListener(e -> addSplitClicked());
+        addSplitButtonContainer.add(addSplitButton);
+        splitRow.add(addSplitButtonContainer);
+        parent.add(splitRow);
 
         JPanel bottomRow = new JPanel();
         JButton submitButton = new JButton("Submit");
@@ -93,5 +115,29 @@ public class ResultCreateScreen extends Screen {
     private void resetFields() {
         Athlete[] athletes = athleteService.getAthletesNotInRace(raceId);
         athleteField.setModel(new DefaultComboBoxModel<>(athletes));
+
+        timeField.clear();
+
+        splitFields.clear();
+        splitFieldContainer.removeAll();
+    }
+
+    private void addSplitClicked() {
+        addEmptySplitContainer();
+    }
+    private void deleteSplitClicked(Object obj) {
+        SplitInput split = (SplitInput) obj;
+        splitFieldContainer.remove(split);
+        splitFields.remove(split);
+        getPanel().repaint();
+        getPanel().revalidate();
+    }
+    private void addEmptySplitContainer() {
+        SplitInput newSi = new SplitInput();
+        newSi.setDeleteAction(this::deleteSplitClicked);
+        splitFields.add(newSi);
+        splitFieldContainer.add(newSi);
+        getPanel().repaint();
+        getPanel().revalidate();
     }
 }

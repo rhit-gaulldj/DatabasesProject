@@ -68,4 +68,10 @@ public class TimeInput extends JPanel {
         int fraction = Integer.parseInt(fractionalSecsField.getText());
         return new Time(mins, secs, fraction);
     }
+
+    public void clear() {
+        minsField.setText("");
+        secsField.setText("");
+        fractionalSecsField.setText("");
+    }
 }
