@@ -95,6 +95,16 @@ public class MeetViewScreen extends Screen {
 
         JPanel modifyRaceButtonPanel = new JPanel();
         newResultButton = new JButton("Add Result");
+        newResultButton.addActionListener(e -> {
+            ScreenOpenArgs args = new ScreenOpenArgs();
+            args.add("race_id", currentRace.id());
+            args.add("race_name", currentRace.toString());
+            args.add("meet_id", meetId);
+            args.add("meet_name", meetName);
+            args.add("meet_year", meetYear);
+            args.add("course_id", courseId);
+            navHandler.navigate(ScreenTypes.ResultCreate, args);
+        });
         deleteRaceButton = new JButton("Delete Race");
         deleteRaceButton.addActionListener(e -> deleteRace());
         modifyRaceButtonPanel.add(newResultButton);
@@ -118,9 +128,10 @@ public class MeetViewScreen extends Screen {
         Course course = courseService.getCourse(courseId);
         courseNameLabel.setText("Course: " + course.name());
 
-        RaceLevel[] availableLevels = meetService.getUnusedLevelForMeet(meetId);
+        // Don't do anymore since we can have 1 race level per gender
+        //RaceLevel[] availableLevels = meetService.getUnusedLevelForMeet(meetId);
         // If length is 0, then cannot create any new races
-        addNewRaceButton.setEnabled(availableLevels.length > 0);
+        //addNewRaceButton.setEnabled(availableLevels.length > 0);
 
         resetFields();
         updateTable();

@@ -112,7 +112,7 @@ public class MeetService extends AbstractDBService {
                 result.add(new Race(rs.getInt(1),
                         new DistancePair(rs.getFloat(2), rs.getString(3)),
                         new RaceLevel(rs.getInt(4), rs.getString(5)),
-                        rs.getInt(6)));
+                        rs.getInt(6), Gender.fromString(rs.getString(7))));
             }
             Race[] arr = new Race[result.size()];
             result.toArray(arr);

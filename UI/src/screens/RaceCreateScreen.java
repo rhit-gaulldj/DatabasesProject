@@ -5,6 +5,7 @@ import components.NavHandler;
 import databaseServices.MeetService;
 import databaseServices.RaceService;
 import dbObj.DistancePair;
+import dbObj.Gender;
 import dbObj.Race;
 import dbObj.RaceLevel;
 
@@ -14,6 +15,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +33,7 @@ public class RaceCreateScreen extends Screen {
     private JLabel titleLabel;
     private JTextField distanceField;
     private JComboBox<String> distanceUnitField;
+    private JComboBox<String> genderField;
     private JComboBox<RaceLevel> raceLevelField;
 
     private static final String[] UNITS = new String[]{ "mi", "km", "m" };
@@ -82,6 +85,13 @@ public class RaceCreateScreen extends Screen {
         levelRow.add(raceLevelField);
         parent.add(levelRow);
 
+        JPanel genderRow = new JPanel();
+        genderField = new JComboBox<>(Arrays.stream(Gender.values())
+                .map(Gender::toLongString).toArray(String[]::new));
+        genderRow.add(new JLabel("Gender: "));
+        genderRow.add(genderField);
+        parent.add(genderRow);
+
         // Throw into a container so that it's centered
         JPanel submitPanel = new JPanel();
         JButton submitButton = new JButton("Submit");
@@ -99,7 +109,7 @@ public class RaceCreateScreen extends Screen {
 
         titleLabel.setText("Create New Race for " + meetName + " (" + meetYear + ")");
 
-        RaceLevel[] levels = meetService.getUnusedLevelForMeet(meetId);
+        RaceLevel[] levels = meetService.getRaceLevels();
         DefaultComboBoxModel<RaceLevel> model = new DefaultComboBoxModel<>(levels);
         raceLevelField.setModel(model);
 
@@ -120,10 +130,17 @@ public class RaceCreateScreen extends Screen {
 
         String distanceUnit = distanceUnitField.getSelectedItem().toString();
         RaceLevel level = (RaceLevel) raceLevelField.getSelectedItem();
-        Race newRace = new Race(-1, new DistancePair(distance, distanceUnit), level, meetId);
-        raceService.createRace(newRace);
-
-        goBack();
+        Gender gender = Gender.fromLongString(genderField.getSelectedItem().toString());
+        Race newRace = new Race(-1, new DistancePair(distance, distanceUnit), level, meetId, gender);
+        int result = raceService.createRace(newRace);
+        if (result == 0) {
+            // Success
+            goBack();
+        } else if (result == 11) {
+            JOptionPane.showMessageDialog(null, "There is already a race for this meet with this gender and race level");
+        } else {
+            JOptionPane.showMessageDialog(null, "Error inserting race");
+        }
     }
 
     private void goBack() {

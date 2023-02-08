@@ -1,7 +1,6 @@
 package databaseServices;
 
-import dbObj.Athlete;
-import dbObj.Gender;
+import dbObj.*;
 
 import javax.swing.*;
 import java.sql.CallableStatement;
@@ -94,5 +93,26 @@ public class AthleteService extends AbstractDBService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public Athlete[] getAthletesNotInRace(int raceId) {
+        try {
+            CallableStatement stmt = dbService.getConnection()
+                    .prepareCall("{? = call ...(?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setInt(2, raceId);
+            ResultSet rs = stmt.executeQuery();
+            List<Athlete> result = new ArrayList<>();
+            while (rs.next()) {
+                result.add(new Athlete(rs.getInt(1), rs.getString(2), rs.getString(3),
+                        Gender.fromString(rs.getString(5)), rs.getInt(4)));
+            }
+            Athlete[] arr = new Athlete[result.size()];
+            result.toArray(arr);
+            return arr;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

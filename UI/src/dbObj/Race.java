@@ -1,9 +1,9 @@
 package dbObj;
 
-public record Race(int id, DistancePair dist, RaceLevel raceLevel, int meetId) {
+public record Race(int id, DistancePair dist, RaceLevel raceLevel, int meetId, Gender gender) {
 
     @Override
     public String toString() {
-        return raceLevel.name() + " (" + dist.toString() + ")";
+        return gender.toLongString() + " " + raceLevel.name() + " (" + dist.toString() + ")";
     }
 }

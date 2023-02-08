@@ -15,24 +15,24 @@ public class RaceService {
         this.dbService = dbService;
     }
 
-    public void createRace(Race race) {
+    public int createRace(Race race) {
         try {
             CallableStatement stmt = dbService.getConnection()
-                    .prepareCall("{? = call insert_race(?, ?, ?, ?)}");
+                    .prepareCall("{? = call insert_race(?, ?, ?, ?, ?)}");
             stmt.registerOutParameter(1, Types.INTEGER);
             stmt.setDouble(2, race.dist().dist());
             stmt.setString(3, race.dist().units());
             stmt.setInt(4, race.raceLevel().id());
             stmt.setInt(5, race.meetId());
+            stmt.setString(6, race.gender().toString());
             stmt.execute();
             int status = stmt.getInt(1);
-            if (status != 0) {
-                JOptionPane.showMessageDialog(null, "Error inserting race");
-            }
+            return status;
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return -1;
     }
 
     public void deleteRace(int raceId) {

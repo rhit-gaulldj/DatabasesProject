@@ -1,7 +1,7 @@
 USE TeamXCDB
 GO
 
-CREATE PROCEDURE get_races_for_meet(@id int)
+ALTER PROCEDURE get_races_for_meet(@id int)
 AS
 BEGIN
 	IF (@id is null) BEGIN
@@ -13,7 +13,7 @@ BEGIN
 		RETURN 2
 	END
 
-	SELECT r.race_id, r.distance, r.distance_unit, r.race_level_id, rl.[name], r.meet_id
+	SELECT r.race_id, r.distance, r.distance_unit, r.race_level_id, rl.[name], r.meet_id, r.gender
 		FROM Race r
 		JOIN RaceLevel rl ON r.race_level_id = rl.race_level_id
 		JOIN Meet m ON r.meet_id = m.meet_id
