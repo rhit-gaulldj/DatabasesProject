@@ -14,7 +14,7 @@ BEGIN
 		RETURN 2
 	END
 
-	SELECT race_id, [Athlete], [FormattedTime], [Grade], [Splits]
+	SELECT result_id, [Athlete], [FormattedTime], [Grade], [Splits]
 		FROM all_times_view
 		WHERE race_id = @RaceId
 		ORDER BY [time] ASC

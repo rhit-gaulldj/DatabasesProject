@@ -53,6 +53,21 @@ public class RaceService {
         }
     }
 
+    public void deleteResult(int resultId) {
+        try {
+            CallableStatement stmt = dbService.getConnection().prepareCall("{? = call delete_result(?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setInt(2, resultId);
+            stmt.execute();
+            int status = stmt.getInt(1);
+            if (status != 0) {
+                JOptionPane.showMessageDialog(null, "There was an error deleting the result");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void addResult(int raceId, int athleteId, Time time, ArrayList<Split> splits) {
         try {
             CallableStatement stmt = dbService.getConnection()

@@ -150,8 +150,9 @@ public class MeetViewScreen extends Screen {
                 row[4] = new JLabel(results[i].splitString());
 
                 LinkButton delButton = new LinkButton(new Color(193, 71, 71), "Delete", 12);
+                int finalI = i;
                 delButton.addActionListener(() -> {
-                    // TODO: Handle
+                    deleteResult(results[finalI]);
                 });
                 row[5] = delButton;
 
@@ -203,6 +204,15 @@ public class MeetViewScreen extends Screen {
         if (dialogResult == JOptionPane.YES_OPTION) {
             raceService.deleteRace(currentRace.id());
             resetFields();
+            updateTable();
+        }
+    }
+
+    private void deleteResult(RaceResult result) {
+        int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this result for " +
+                result.athleteName() + "?", "Warning", JOptionPane.YES_NO_OPTION);
+        if (dialogResult == JOptionPane.YES_OPTION) {
+            raceService.deleteResult(result.id());
             updateTable();
         }
     }
