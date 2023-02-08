@@ -71,13 +71,17 @@ public class MeetViewScreen extends Screen {
         topPanel.add(addNewRaceButton);
         parent.add(topPanel);
 
+        JPanel titleContainer = new JPanel();
         titleLabel = new JLabel("TITLE");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        parent.add(titleLabel);
+        titleContainer.add(titleLabel);
+        parent.add(titleContainer);
 
+        JPanel courseNameContainer = new JPanel();
         courseNameLabel = new JLabel("COURSE NAME");
         courseNameLabel.setFont(new Font("Arial", Font.BOLD, 15));
-        parent.add(courseNameLabel);
+        courseNameContainer.add(courseNameLabel);
+        parent.add(courseNameContainer);
 
         JPanel raceLevelPanel = new JPanel();
         raceField = new JComboBox<>();

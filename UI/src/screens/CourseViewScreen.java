@@ -52,9 +52,11 @@ public class CourseViewScreen extends Screen {
         backButton.addActionListener(() -> navHandler.navigate(ScreenTypes.CourseList, new ScreenOpenArgs()));
         parent.add(backButton);
 
+        JPanel nameContainer = new JPanel();
         nameLabel = new JLabel("");
         nameLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        parent.add(nameLabel);
+        nameContainer.add(nameLabel);
+        parent.add(nameContainer);
 
         JPanel duplicateBoxPanel = new JPanel();
         allowDuplicatesField = new JCheckBox("", false);
@@ -81,9 +83,11 @@ public class CourseViewScreen extends Screen {
         distancePanel.add(distanceField);
         parent.add(distancePanel);
 
+        JPanel resultsButtonContainer = new JPanel();
         JButton resultsButton = new JButton("Show Results");
         resultsButton.addActionListener(e -> showResults());
-        parent.add(resultsButton);
+        resultsButtonContainer.add(resultsButton);
+        parent.add(resultsButtonContainer);
 
         table = new ComponentTable(new String[] { "Number", "Athlete", "Time", "Meet", "Year", "Grade", "Splits" });
         tableScrollPane = new JScrollPane();
