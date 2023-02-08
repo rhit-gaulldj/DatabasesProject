@@ -5,6 +5,7 @@ import components.LinkButton;
 import components.NavHandler;
 import databaseServices.CourseService;
 import databaseServices.MeetService;
+import databaseServices.RaceService;
 import dbObj.Course;
 import dbObj.Race;
 import dbObj.RaceLevel;
@@ -18,6 +19,7 @@ public class MeetViewScreen extends Screen {
 
     private MeetService meetService;
     private CourseService courseService;
+    private RaceService raceService;
 
     private int meetId;
     private String meetName;
@@ -38,9 +40,11 @@ public class MeetViewScreen extends Screen {
     private JScrollPane tableScrollPane;
     private static final int SCROLL_PANE_HEIGHT = 450; // Simply hardcoded
 
-    public MeetViewScreen(MeetService meetService, CourseService courseService, NavHandler navHandler) {
+    public MeetViewScreen(MeetService meetService, CourseService courseService,
+                          RaceService raceService, NavHandler navHandler) {
         this.meetService = meetService;
         this.courseService = courseService;
+        this.raceService = raceService;
 
         this.navHandler = navHandler;
     }
@@ -77,13 +81,18 @@ public class MeetViewScreen extends Screen {
 
         JPanel raceLevelPanel = new JPanel();
         raceField = new JComboBox<>();
+        raceField.addActionListener(e -> {
+            currentRace = (Race) raceField.getSelectedItem();
+            updateTable();
+        });
         raceLevelPanel.add(new JLabel("Race:"));
         raceLevelPanel.add(raceField);
         parent.add(raceLevelPanel);
 
         JPanel modifyRaceButtonPanel = new JPanel();
         newResultButton = new JButton("Add Result");
-        deleteRaceButton = new JButton("Delete Race"); // TODO must reset fields after deleting
+        deleteRaceButton = new JButton("Delete Race");
+        deleteRaceButton.addActionListener(e -> deleteRace());
         modifyRaceButtonPanel.add(newResultButton);
         modifyRaceButtonPanel.add(deleteRaceButton);
         parent.add(modifyRaceButtonPanel);
@@ -169,10 +178,16 @@ public class MeetViewScreen extends Screen {
 
         // Reset the current race right now, since it must be initialized when page loads
         currentRace = (Race) raceField.getSelectedItem();
+    }
 
-        raceField.addActionListener(e -> {
-            currentRace = (Race) raceField.getSelectedItem();
+    private void deleteRace() {
+        int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete the " +
+                currentRace.toString() + " race for " + meetName + " (" + meetYear + ")?",
+                "Warning", JOptionPane.YES_NO_OPTION);
+        if (dialogResult == JOptionPane.YES_OPTION) {
+            raceService.deleteRace(currentRace.id());
+            resetFields();
             updateTable();
-        });
+        }
     }
 }

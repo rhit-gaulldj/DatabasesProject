@@ -34,4 +34,19 @@ public class RaceService {
             e.printStackTrace();
         }
     }
+
+    public void deleteRace(int raceId) {
+        try {
+            CallableStatement stmt = dbService.getConnection().prepareCall("{? = call delete_race(?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setInt(2, raceId);
+            stmt.execute();
+            int status = stmt.getInt(1);
+            if (status != 0) {
+                JOptionPane.showMessageDialog(null, "There was an error deleting the race");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
