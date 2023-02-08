@@ -33,5 +33,6 @@ BEGIN
 		JOIN Result rs ON rs.athlete_id = a.athlete_id
 		JOIN Race r ON rs.race_id = r.race_id
 		WHERE r.race_id = @RaceId)
+	ORDER BY a.last_name, a.first_name
 
 END

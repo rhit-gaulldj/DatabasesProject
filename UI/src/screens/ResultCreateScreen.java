@@ -1,6 +1,7 @@
 package screens;
 
 import components.NavHandler;
+import components.TimeInput;
 import databaseServices.AthleteService;
 import databaseServices.RaceService;
 import dbObj.Athlete;
@@ -24,6 +25,7 @@ public class ResultCreateScreen extends Screen {
 
     private JLabel titleLabel;
     private JComboBox<Athlete> athleteField;
+    private TimeInput timeField;
 
     public ResultCreateScreen(RaceService raceService, AthleteService athleteService,
                               NavHandler navHandler) {
@@ -50,6 +52,12 @@ public class ResultCreateScreen extends Screen {
         athleteRow.add(athleteField);
         parent.add(athleteRow);
 
+        JPanel timeRow = new JPanel();
+        timeField = new TimeInput();
+        timeRow.add(new JLabel("Time: "));
+        timeRow.add(timeField);
+        parent.add(timeRow);
+
         JPanel bottomRow = new JPanel();
         JButton submitButton = new JButton("Submit");
         JButton cancelButton = new JButton("Cancel");
@@ -69,6 +77,8 @@ public class ResultCreateScreen extends Screen {
         raceId = (int) args.get("race_id");
         String raceName = args.get("race_name").toString();
         titleLabel.setText("Add Result for " + raceName + " Race in " + meetName + " (" + meetYear + ")");
+
+        resetFields();
     }
 
     private void goBack() {
