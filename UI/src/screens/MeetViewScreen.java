@@ -27,6 +27,8 @@ public class MeetViewScreen extends Screen {
     private JLabel titleLabel;
     private JLabel courseNameLabel;
     private JComboBox<Race> raceField;
+    private JButton newResultButton;
+    private JButton deleteRaceButton;
 
     private ComponentTable table;
     private JScrollPane tableScrollPane;
@@ -69,9 +71,9 @@ public class MeetViewScreen extends Screen {
         parent.add(raceLevelPanel);
 
         JPanel modifyRaceButtonPanel = new JPanel();
-        JButton addResultButton = new JButton("Add Result");
-        JButton deleteRaceButton = new JButton("Delete Race"); // TODO must reset fields after deleting
-        modifyRaceButtonPanel.add(addResultButton);
+        newResultButton = new JButton("Add Result");
+        deleteRaceButton = new JButton("Delete Race"); // TODO must reset fields after deleting
+        modifyRaceButtonPanel.add(newResultButton);
         modifyRaceButtonPanel.add(deleteRaceButton);
         parent.add(modifyRaceButtonPanel);
 
@@ -94,25 +96,30 @@ public class MeetViewScreen extends Screen {
     }
 
     private void updateTable() {
-        RaceResult[] results = meetService.getResultsForRace(currentRace.id());
         ArrayList<JComponent[]> cells = new ArrayList<>();
-        for (int i = 0; i < results.length; i++) {
-            JComponent[] row = new JComponent[6];
-            row[0] = new JLabel(Integer.toString(i + 1));
-            row[1] = new JLabel(results[i].athleteName());
-            row[2] = new JLabel(results[i].timeString());
-            row[3] = new JLabel(Integer.toString(results[i].grade()));
-            row[4] = new JLabel(results[i].splitString());
+        if (currentRace != null) {
+            RaceResult[] results = meetService.getResultsForRace(currentRace.id());
+            for (int i = 0; i < results.length; i++) {
+                JComponent[] row = new JComponent[6];
+                row[0] = new JLabel(Integer.toString(i + 1));
+                row[1] = new JLabel(results[i].athleteName());
+                row[2] = new JLabel(results[i].timeString());
+                row[3] = new JLabel(Integer.toString(results[i].grade()));
+                row[4] = new JLabel(results[i].splitString());
 
-            LinkButton delButton = new LinkButton(new Color(193, 71, 71), "Delete", 12);
-            delButton.addActionListener(() -> {
-                // TODO: Handle
-            });
-            row[5] = delButton;
+                LinkButton delButton = new LinkButton(new Color(193, 71, 71), "Delete", 12);
+                delButton.addActionListener(() -> {
+                    // TODO: Handle
+                });
+                row[5] = delButton;
 
-            cells.add(row);
+                cells.add(row);
+            }
         }
         table.setCells(cells);
+
+        newResultButton.setEnabled(currentRace != null);
+        deleteRaceButton.setEnabled(currentRace != null);
 
         getPanel().repaint();
         getPanel().revalidate();
