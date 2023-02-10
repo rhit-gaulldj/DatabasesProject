@@ -93,6 +93,7 @@ public class Main {
         screenDict.put(ScreenTypes.MeetModify, new MeetModifyScreen(meetService,
                 courseService, this::switchScreens));
         screenDict.put(ScreenTypes.CourseView, new CourseViewScreen(courseService, this::switchScreens));
+        screenDict.put(ScreenTypes.AthleteView, new AthleteViewScreen(athleteService, this::switchScreens));
         screenDict.put(ScreenTypes.MeetView, new MeetViewScreen(meetService, courseService,
                 raceService, this::switchScreens));
         screenDict.put(ScreenTypes.RaceCreate, new RaceCreateScreen(meetService, raceService, this::switchScreens));

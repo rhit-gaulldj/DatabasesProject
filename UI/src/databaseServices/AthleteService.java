@@ -115,4 +115,40 @@ public class AthleteService extends AbstractDBService {
         }
         return null;
     }
+    public ResultSet getPbs(int athleteID) {
+        try {
+            CallableStatement stmt = dbService.getConnection()
+                    .prepareCall("{? = call get_athlete_pbs(?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setInt(2, athleteID);
+            return stmt.executeQuery();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getPredictedTime(int athleteID,float distance, String unit) {
+        try {
+            CallableStatement stmt = dbService.getConnection()
+                    .prepareCall("{? = call predict_athlete_times(?,?,?,?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setInt(2, athleteID);
+            stmt.setFloat(3, distance);
+            stmt.setString(4, unit);
+            stmt.registerOutParameter(5, Types.VARCHAR);
+            try{
+            stmt.execute();
+            }
+            catch(SQLException e){
+                return "Athlete has no data";
+            }
+            return "Predicted "+distance+unit+" Time: ["+stmt.getString(5)+"]";
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

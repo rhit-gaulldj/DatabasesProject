@@ -5,6 +5,7 @@ import databaseServices.AthleteService;
 import databaseServices.DBObjectToFieldsHandler;
 import databaseServices.UserService;
 import dbObj.Athlete;
+import dbObj.Course;
 
 import javax.swing.*;
 
@@ -35,6 +36,7 @@ public class AthletesListScreen extends ListScreen {
 
         addEditHandler(this::edit);
         addDeleteHandler(this::delete);
+        setOnFirstClickEvent(this::athleteClicked);
     }
 
     @Override
@@ -57,6 +59,15 @@ public class AthletesListScreen extends ListScreen {
             athleteService.deleteAthlete(ath.id());
             updateAll();
         }
+    }
+
+    private void athleteClicked(Object obj) {
+        Athlete a = (Athlete) obj;
+        ScreenOpenArgs args = new ScreenOpenArgs();
+        //args.add("name", a.firstName());
+        //args.add("name", a.lastName());
+        args.add("id", a.id());
+        navHandler.navigate(ScreenTypes.AthleteView, args);
     }
 
 }

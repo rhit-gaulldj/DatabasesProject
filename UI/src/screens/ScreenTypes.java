@@ -9,6 +9,7 @@ public enum ScreenTypes {
     CourseModify,
     MeetList,
     MeetModify,
+    AthleteView,
     CourseView,
     MeetView,
     RaceCreate,
