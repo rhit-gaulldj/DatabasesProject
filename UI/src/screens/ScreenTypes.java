@@ -2,7 +2,7 @@ package screens;
 
 public enum ScreenTypes {
     Login,
-    Test,
+//    Test,
     AthletesList,
     AthleteModify,
     CourseList,
@@ -14,4 +14,5 @@ public enum ScreenTypes {
     MeetView,
     RaceCreate,
     ResultCreate,
+    Search,
 }

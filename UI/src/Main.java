@@ -33,6 +33,7 @@ public class Main {
     private CourseService courseService;
     private MeetService meetService;
     private RaceService raceService;
+    private SearchService searchService;
 
     private Properties properties;
 
@@ -63,6 +64,7 @@ public class Main {
         courseService = new CourseService(dbService);
         meetService = new MeetService(dbService);
         raceService = new RaceService(dbService);
+        searchService = new SearchService(dbService);
     }
     private void initUi() {
         this.frame = new JFrame("Cross Country App");
@@ -85,7 +87,7 @@ public class Main {
         screenDict.put(ScreenTypes.Login, new LoginScreen(userService, this::onLoginSuccess));
         screenDict.put(ScreenTypes.AthletesList, new AthletesListScreen(athleteService,
                 userService, this::switchScreens));
-        screenDict.put(ScreenTypes.Test, new TestScreen(this::onLogout, userService));
+//        screenDict.put(ScreenTypes.Test, new TestScreen(this::onLogout, userService));
         screenDict.put(ScreenTypes.AthleteModify, new AthleteModifyScreen(athleteService, this::switchScreens));
         screenDict.put(ScreenTypes.CourseList, new CourseListScreen(this::switchScreens, userService, courseService));
         screenDict.put(ScreenTypes.MeetList, new MeetListScreen(this::switchScreens, userService, meetService));
@@ -149,77 +151,75 @@ public class Main {
         newlyActive.setVisible(true);
         this.activeScreen = newScreenType;
         newScreen.openScreen(args);
+    }
 
         // TODO: Should be refactored into individual screens
-        if(newScreenType == ScreenTypes.Test) {
-        	
-        	
-        	try {
-				CallableStatement stmt = dbService.getConnection().prepareCall("{call dbo.view_all_results}");
-				
-				ResultSet rs = stmt.executeQuery();
-				JTable table = new JTable(buildTableModel(rs));
-				newlyActive.add(table);
-				
-				
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-            //Button to that shows popup
-            JButton updateButton = new JButton("Modify Data");
-            JPanel panel = new JPanel();
-            newlyActive.add(updateButton);
-
-            JTextField fieldMeetName = new JTextField();
-            JTextField fieldMeetYear = new JTextField();
-            Object[] message = {
-                    "Meet Name:", fieldMeetName,
-                    "Meet Year:", fieldMeetYear
-            };
-
-            updateButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    int confirmed = JOptionPane.showConfirmDialog(null, message, "Enter Values", JOptionPane.OK_CANCEL_OPTION);
-                    if(confirmed == JOptionPane.OK_OPTION)
-                        this.insertMeet(fieldMeetName.getText(),fieldMeetYear.getText());
-                }
-                private boolean insertMeet(String meetName, String meetYear) {
-                    try {
-                        int parsedMeetYear = Integer.parseInt(meetYear);
-                        if (meetName != null && parsedMeetYear>0) {
-                            CallableStatement cs = dbService.getConnection().prepareCall("{call insert_meet(?,?)}");
-                            cs.setString(1, meetName);
-                            cs.setInt(2, parsedMeetYear);
-                            cs.execute();
-//                            if(cs.getInt(1)==0) {
-//                                JOptionPane.showMessageDialog((Component)null, "Successfully Inserted Meet!");
-//                                return true;
-//                            }
-//                            JOptionPane.showMessageDialog((Component)null, "Stored Procedure execution failed!");
+//        if(newScreenType == ScreenTypes.Test) {
+//
+//
+//        	try {
+//				CallableStatement stmt = dbService.getConnection().prepareCall("{call dbo.view_all_results}");
+//
+//				ResultSet rs = stmt.executeQuery();
+//				JTable table = new JTable(buildTableModel(rs));
+//				newlyActive.add(table);
+//
+//
+//			} catch (SQLException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//            //Button to that shows popup
+//            JButton updateButton = new JButton("Modify Data");
+//            JPanel panel = new JPanel();
+//            newlyActive.add(updateButton);
+//
+//            JTextField fieldMeetName = new JTextField();
+//            JTextField fieldMeetYear = new JTextField();
+//            Object[] message = {
+//                    "Meet Name:", fieldMeetName,
+//                    "Meet Year:", fieldMeetYear
+//            };
+//
+//            updateButton.addActionListener(new ActionListener() {
+//                @Override
+//                public void actionPerformed(ActionEvent e) {
+//                    int confirmed = JOptionPane.showConfirmDialog(null, message, "Enter Values", JOptionPane.OK_CANCEL_OPTION);
+//                    if(confirmed == JOptionPane.OK_OPTION)
+//                        this.insertMeet(fieldMeetName.getText(),fieldMeetYear.getText());
+//                }
+//                private boolean insertMeet(String meetName, String meetYear) {
+//                    try {
+//                        int parsedMeetYear = Integer.parseInt(meetYear);
+//                        if (meetName != null && parsedMeetYear>0) {
+//                            CallableStatement cs = dbService.getConnection().prepareCall("{call insert_meet(?,?)}");
+//                            cs.setString(1, meetName);
+//                            cs.setInt(2, parsedMeetYear);
+//                            cs.execute();
+////                            if(cs.getInt(1)==0) {
+////                                JOptionPane.showMessageDialog((Component)null, "Successfully Inserted Meet!");
+////                                return true;
+////                            }
+////                            JOptionPane.showMessageDialog((Component)null, "Stored Procedure execution failed!");
+////                            return false;
+//                            JOptionPane.showMessageDialog((Component)null, "Successfully Inserted Meet!");
+//                            return true;
+//                        } else {
+//                            JOptionPane.showMessageDialog((Component)null, "Invalid Parameters!");
 //                            return false;
-                            JOptionPane.showMessageDialog((Component)null, "Successfully Inserted Meet!");
-                            return true;
-                        } else {
-                            JOptionPane.showMessageDialog((Component)null, "Invalid Parameters!");
-                            return false;
-                        }
-                    } catch(NumberFormatException e) {
-                        JOptionPane.showMessageDialog((Component)null, "Meet Yeer must be an integer!");
-                        throw new RuntimeException(e);
-                    } catch (SQLException var8) {
-                        JOptionPane.showMessageDialog((Component)null, var8);
-                        throw new RuntimeException(var8);
-                    }
-                }
-            });
+//                        }
+//                    } catch(NumberFormatException e) {
+//                        JOptionPane.showMessageDialog((Component)null, "Meet Yeer must be an integer!");
+//                        throw new RuntimeException(e);
+//                    } catch (SQLException var8) {
+//                        JOptionPane.showMessageDialog((Component)null, var8);
+//                        throw new RuntimeException(var8);
+//                    }
+//                }
+//            });
 
-
-
-
-        }
-    }
+//        }
+//    }
 
 
     private void onLoginSuccess(String sessionId) {
