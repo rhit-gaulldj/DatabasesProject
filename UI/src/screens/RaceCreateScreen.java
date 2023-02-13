@@ -146,9 +146,9 @@ public class RaceCreateScreen extends Screen {
     private void goBack() {
         ScreenOpenArgs args = new ScreenOpenArgs();
         args.add("id", meetId);
-        args.add("name", meetName);
-        args.add("year", meetYear);
-        args.add("course_id", courseId);
+//        args.add("name", meetName);
+//        args.add("year", meetYear);
+//        args.add("course_id", courseId);
         navHandler.navigate(ScreenTypes.MeetView, args);
     }
 

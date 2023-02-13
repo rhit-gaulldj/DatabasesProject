@@ -64,8 +64,6 @@ public class AthletesListScreen extends ListScreen {
     private void athleteClicked(Object obj) {
         Athlete a = (Athlete) obj;
         ScreenOpenArgs args = new ScreenOpenArgs();
-        //args.add("name", a.firstName());
-        //args.add("name", a.lastName());
         args.add("id", a.id());
         navHandler.navigate(ScreenTypes.AthleteView, args);
     }

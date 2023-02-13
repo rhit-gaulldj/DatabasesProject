@@ -4,6 +4,7 @@ import components.ComponentTable;
 import components.LinkButton;
 import components.NavHandler;
 import databaseServices.AthleteService;
+import dbObj.Athlete;
 import dbObj.Course;
 import dbObj.DistancePair;
 import dbObj.RaceLevel;
@@ -27,8 +28,6 @@ public class AthleteViewScreen extends Screen {
 
     private JLabel nameLabel;
     private JLabel prediction;
-    private JCheckBox allowDuplicatesField;
-    private JComboBox<RaceLevel> raceLevelField;
     private JSpinner distanceField;
     private JComboBox<String> unitsField;
 
@@ -50,48 +49,8 @@ public class AthleteViewScreen extends Screen {
         super.setLayout(new BoxLayout(parent, BoxLayout.Y_AXIS));
 
         LinkButton backButton = new LinkButton(new Color(5, 138, 255), "<< Back", 12);
-        backButton.addActionListener(() -> navHandler.navigate(ScreenTypes.CourseList, new ScreenOpenArgs()));
+        backButton.addActionListener(() -> navHandler.navigate(ScreenTypes.AthletesList, new ScreenOpenArgs()));
         parent.add(backButton);
-
-
-/*
-        JPanel nameContainer = new JPanel();
-        nameLabel = new JLabel("");
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        nameContainer.add(nameLabel);
-        parent.add(nameContainer);
-
-        JPanel duplicateBoxPanel = new JPanel();
-        allowDuplicatesField = new JCheckBox("", false);
-        duplicateBoxPanel.add(allowDuplicatesField);
-        duplicateBoxPanel.add(new JLabel("Allow multiple results from the same athlete"));
-        parent.add(duplicateBoxPanel);
-
-        JPanel raceLevelPanel = new JPanel();
-        raceLevelField = new JComboBox<>();
-        raceLevelPanel.add(new JLabel("Race Level:"));
-        raceLevelPanel.add(raceLevelField);
-        parent.add(raceLevelPanel);
-
-        JPanel numResultsPanel = new JPanel();
-        numResultsField = new JSpinner(new SpinnerNumberModel(10, 5, 100, 5));
-        numResultsField.setEditor(new JSpinner.NumberEditor(numResultsField, "#"));
-        numResultsPanel.add(new JLabel("Number of Results:"));
-        numResultsPanel.add(numResultsField);
-        parent.add(numResultsPanel);
-
-        JPanel distancePanel = new JPanel();
-        distanceField = new JComboBox<>();
-        distancePanel.add(new JLabel("Distance:"));
-        distancePanel.add(distanceField);
-        parent.add(distancePanel);
-
-        JPanel resultsButtonContainer = new JPanel();
-        JButton resultsButton = new JButton("Show Results");
-        resultsButton.addActionListener(e -> showResults());
-        resultsButtonContainer.add(resultsButton);
-        parent.add(resultsButtonContainer);
-*/
 
         JPanel nameContainer = new JPanel();
         nameLabel = new JLabel("");
@@ -128,27 +87,20 @@ public class AthleteViewScreen extends Screen {
         tableScrollPane = new JScrollPane();
         tableScrollPane.setViewportView(table);
         parent.add(tableScrollPane);
-//
-//        table = new ComponentTable(new String[] { "Number","ID", "First Name", "Last Name", "Grad Year", "Gender", "Meet Name", "Year","Course Name","Distance","Distance Unit","Best Time","Per Mile","Splits" });
-//        tableScrollPane = new JScrollPane();
-//        tableScrollPane.setViewportView(table);
-//        parent.add(tableScrollPane);
     }
 
     @Override
     public void openScreen(ScreenOpenArgs args) {
-        nameLabel.setText((String) args.get("name"));
-
         this.athleteId = (int) args.get("id");
 
-        resetFields();
+        Athlete ath = athleteService.getAthlete(athleteId);
+        nameLabel.setText(ath.firstName() + " " + ath.lastName());
 
+        resetFields();
 
         // Populate with initial results
         showResults();
 
-        // Set the scroll pane to have a preferred height of whatever the size of the table is with
-        // the default of 10 elements
         scrollPaneHeight = (int) table.getPreferredSize().getHeight() + 15;
         updateScrollPane();
     }

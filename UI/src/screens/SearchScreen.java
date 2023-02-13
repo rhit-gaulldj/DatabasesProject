@@ -92,9 +92,32 @@ public class SearchScreen extends Screen {
                     case SearchResult.MEET -> "Meet";
                     default -> "Unknown";
                 };
+                ResultHighlightLabel nameLabel = new ResultHighlightLabel(result.name(), query);
+                switch (result.type()) {
+                    case SearchResult.ATHLETE:
+                        nameLabel.addActionListener(() -> {
+                            ScreenOpenArgs args = new ScreenOpenArgs();
+                            args.add("id", result.id());
+                            navHandler.navigate(ScreenTypes.AthleteView, args);
+                        });
+                        break;
+                    case SearchResult.COURSE:
+                        nameLabel.addActionListener(() -> {
+                            ScreenOpenArgs args = new ScreenOpenArgs();
+                            args.add("id", result.id());
+                            navHandler.navigate(ScreenTypes.CourseView, args);
+                        });
+                        break;
+                    case SearchResult.MEET:
+                        nameLabel.addActionListener(() -> {
+                            ScreenOpenArgs args = new ScreenOpenArgs();
+                            args.add("id", result.id());
+                            navHandler.navigate(ScreenTypes.MeetView, args);
+                        });
+                        break;
+                }
                 cells.add(new JComponent[]{
-                    new ResultHighlightLabel(result.name(), query),
-                    new JLabel(typeName)
+                    nameLabel, new JLabel(typeName)
                 });
             }
         }

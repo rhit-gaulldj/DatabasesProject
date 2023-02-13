@@ -1,7 +1,11 @@
 package components;
 
+import util.SimpleAction;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Locale;
 
 public class ResultHighlightLabel extends JComponent {
@@ -11,11 +15,22 @@ public class ResultHighlightLabel extends JComponent {
 
     private Font font;
 
+    private SimpleAction onClick;
+
     public ResultHighlightLabel(String text, String targetText) {
         this.text = text;
         this.targetText = targetText;
 
         this.font = new Font("Arial", Font.BOLD, 12);
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (onClick != null) {
+                    onClick.call();
+                }
+            }
+        });
     }
 
     @Override
@@ -59,5 +74,9 @@ public class ResultHighlightLabel extends JComponent {
     public Dimension getPreferredSize() {
         FontMetrics metrics = getFontMetrics(font);
         return new Dimension(metrics.stringWidth(text) + 4, metrics.getHeight() + 5);
+    }
+
+    public void addActionListener(SimpleAction action) {
+        onClick = action;
     }
 }

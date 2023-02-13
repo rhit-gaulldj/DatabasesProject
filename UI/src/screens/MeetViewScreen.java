@@ -6,10 +6,7 @@ import components.NavHandler;
 import databaseServices.CourseService;
 import databaseServices.MeetService;
 import databaseServices.RaceService;
-import dbObj.Course;
-import dbObj.Race;
-import dbObj.RaceLevel;
-import dbObj.RaceResult;
+import dbObj.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -120,9 +117,11 @@ public class MeetViewScreen extends Screen {
     @Override
     public void openScreen(ScreenOpenArgs args) {
         meetId = (int) args.get("id");
-        meetName = args.get("name").toString();
-        meetYear =  (int) args.get("year");
-        courseId = (int) args.get("course_id");
+        Meet meet = meetService.getObj(meetId);
+        meetName = meet.name(); //args.get("name").toString();
+        meetYear = meet.year(); //(int) args.get("year");
+        courseId = meet.courseId(); //(int) args.get("course_id");
+
 
         titleLabel.setText(meetName + " (" + meetYear + ")");
         Course course = courseService.getCourse(courseId);

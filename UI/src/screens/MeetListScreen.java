@@ -66,9 +66,9 @@ public class MeetListScreen extends ListScreen {
     private void meetClicked(Object obj) {
         Meet m = (Meet) obj;
         ScreenOpenArgs args = new ScreenOpenArgs();
-        args.add("name", m.name());
-        args.add("year", m.year());
-        args.add("course_id", m.courseId());
+//        args.add("name", m.name());
+//        args.add("year", m.year());
+//        args.add("course_id", m.courseId());
         args.add("id", m.id());
         navHandler.navigate(ScreenTypes.MeetView, args);
     }

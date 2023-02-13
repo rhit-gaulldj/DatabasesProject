@@ -97,9 +97,9 @@ public class CourseViewScreen extends Screen {
 
     @Override
     public void openScreen(ScreenOpenArgs args) {
-        nameLabel.setText((String) args.get("name"));
-
         this.courseId = (int) args.get("id");
+        Course c = courseService.getCourse(courseId);
+        nameLabel.setText(c.name());
 
         resetFields();
         // Populate with initial results
@@ -148,28 +148,12 @@ public class CourseViewScreen extends Screen {
     private void resetFields() {
         RaceLevel[] levels = courseService.getRaceLevelsForCourse(courseId);
         RaceLevel[] inLevels = new RaceLevel[levels.length + 1];
-        inLevels[0] = new RaceLevel(-1, "Any");
+        inLevels[0] = new RaceLevel(-1, "All");
         for (int i = 0; i < levels.length; i++) {
             inLevels[i + 1] = levels[i];
         }
         raceLevelField.setModel(new DefaultComboBoxModel<>(inLevels));
-        // If varsity or F/S option, select those. Otherwise, just let it be the first level
-        boolean hasVarsity = false;
-        for (int i = 0; i < levels.length; i++) {
-            if (levels[i].name().equals("Varsity")) {
-                hasVarsity = true;
-                raceLevelField.setSelectedIndex(i);
-                break;
-            }
-        }
-        if (!hasVarsity) {
-            for (int i = 0; i < levels.length; i++) {
-                if (levels[i].name().equals("F/S")) {
-                    raceLevelField.setSelectedIndex(i);
-                    break;
-                }
-            }
-        }
+        raceLevelField.setSelectedIndex(0);
 
         DistancePair[] distances = courseService.getCourseDistances(courseId);
         DefaultComboBoxModel<DistancePair> model =
