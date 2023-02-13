@@ -101,6 +101,8 @@ public class Main {
         screenDict.put(ScreenTypes.RaceCreate, new RaceCreateScreen(meetService, raceService, this::switchScreens));
         screenDict.put(ScreenTypes.ResultCreate,
                 new ResultCreateScreen(raceService, athleteService, this::switchScreens));
+        screenDict.put(ScreenTypes.Search,
+                new SearchScreen(searchService, userService, this::switchScreens));
 
         // Create a panel to contain all the others
         JPanel masterPanel = new JPanel();

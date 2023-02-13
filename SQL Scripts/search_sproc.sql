@@ -1,7 +1,7 @@
 USE TeamXCDB
 GO
 
-CREATE PROCEDURE perform_search(@Query nvarchar(200))
+ALTER PROCEDURE perform_search(@Query nvarchar(200))
 AS
 BEGIN
 	-- Returns IDs of matching athletes, courses, and meets
@@ -11,16 +11,16 @@ BEGIN
 		RETURN 1
 	END
 
-	(SELECT a.athlete_id as Id, 'Athlete' as [Type]
-	 FROM Athlete a
+	(SELECT athlete_id as Id, 'Athlete' as [Type], first_name + ' ' + last_name as [Name]
+	 FROM Athlete
 	 WHERE first_name like '%' + @Query + '%'
 			OR last_name like '%' + @Query + '%')
 	UNION
-	(SELECT c.course_id as Id, 'Course' as [Type]
-	 FROM Course c
-	 WHERE c.[name] like '%' + @Query + '%')
+	(SELECT course_id as Id, 'Course' as [Type], [name] as [Name]
+	 FROM Course
+	 WHERE [name] like '%' + @Query + '%')
 	UNION
-	(SELECT m.meet_id as Id, 'Meet' as [Type]
-	 FROM Meet m
-	 WHERE m.[name] like '%' + @Query + '%')
+	(SELECT meet_id as Id, 'Meet' as [Type], [name] + ' (' + CAST([year] as varchar(5)) + ')' as [Name]
+	 FROM Meet
+	 WHERE [name] like '%' + @Query + '%')
 END

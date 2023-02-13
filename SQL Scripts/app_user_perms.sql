@@ -43,3 +43,4 @@ GRANT EXECUTE ON get_athletes_not_in_race TO TeamXCDB;
 GRANT EXECUTE ON insert_result TO TeamXCDB;
 GRANT EXECUTE ON insert_split TO TeamXCDB;
 GRANT EXECUTE ON delete_result TO TeamXCDB;
+GRANT EXECUTE ON perform_search TO TeamXCDB;
