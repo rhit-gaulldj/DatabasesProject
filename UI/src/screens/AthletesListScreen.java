@@ -26,8 +26,7 @@ public class AthletesListScreen extends ListScreen {
             public String[] toFields(Object dbObj) {
                 Athlete a = (Athlete) dbObj;
                 return new String[] {
-                        a.lastName(),
-                        a.firstName(),
+                        a.firstName() + " " + a.lastName(),
                         Integer.toString(a.gradYear()),
                         a.gender().toLongString()
                 };
@@ -41,7 +40,7 @@ public class AthletesListScreen extends ListScreen {
 
     @Override
     public void populatePanel() {
-        super.populatePanel(new String[]{ "Last Name", "First Name", "Grad Year", "Gender", "", "" });
+        super.populatePanel(new String[]{ "Name", "Grad Year", "Gender", "", "" });
     }
 
     private void edit(Object athlete) {

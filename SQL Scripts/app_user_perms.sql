@@ -44,3 +44,5 @@ GRANT EXECUTE ON insert_result TO TeamXCDB;
 GRANT EXECUTE ON insert_split TO TeamXCDB;
 GRANT EXECUTE ON delete_result TO TeamXCDB;
 GRANT EXECUTE ON perform_search TO TeamXCDB;
+GRANT EXECUTE ON get_roster TO TeamXCDB;
+GRANT EXECUTE ON get_roster_years TO TeamXCDB;

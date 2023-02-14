@@ -1,0 +1,9 @@
+USE TeamXCDB
+GO
+
+CREATE PROCEDURE get_roster_years
+AS
+BEGIN
+	SELECT DISTINCT [year] FROM Meet
+	ORDER BY [year]
+END

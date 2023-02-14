@@ -15,4 +15,5 @@ public enum ScreenTypes {
     RaceCreate,
     ResultCreate,
     Search,
+    Roster,
 }

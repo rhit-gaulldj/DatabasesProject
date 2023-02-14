@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public class AthleteService extends AbstractDBService {
 
@@ -150,5 +151,42 @@ public class AthleteService extends AbstractDBService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public ArrayList<Integer> getRosterYears() {
+        try {
+            CallableStatement stmt = dbService.getConnection().prepareCall("{? = call get_roster_years()}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            ResultSet rs = stmt.executeQuery();
+            ArrayList<Integer> results = new ArrayList<>();
+            while (rs.next()) {
+                results.add(rs.getInt(1));
+            }
+            return results;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public ArrayList<Athlete> getRoster(int year, Gender gender) {
+        try {
+            CallableStatement stmt = dbService.getConnection().prepareCall("{? = call get_roster(?, ?)}");
+            stmt.registerOutParameter(1, Types.INTEGER);
+            stmt.setInt(2, year);
+            stmt.setString(3, gender.toString());
+            ResultSet rs = stmt.executeQuery();
+            ArrayList<Athlete> athletes = new ArrayList<>();
+            while (rs.next()) {
+                athletes.add(new Athlete(rs.getInt(1), rs.getString(2), rs.getString(3),
+                        gender, rs.getInt(4)));
+            }
+            return athletes;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 }

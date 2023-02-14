@@ -58,6 +58,12 @@ public class NavBar {
         panel.add(searchButton);
         panel.add(new Bullet(Color.black, BULLET_SIZE));
 
+        LinkButton rosterButton = new LinkButton(COLOR, "Roster", FONT_SIZE);
+        ScreenOpenArgs rosterOpenArgs = new ScreenOpenArgs();
+        rosterButton.addActionListener(() -> handler.navigate(ScreenTypes.Roster, rosterOpenArgs));
+        panel.add(rosterButton);
+        panel.add(new Bullet(Color.black, BULLET_SIZE));
+
         LinkButton logoutButton = new LinkButton(new Color(193, 71, 71), "Logout", FONT_SIZE);
         logoutButton.addActionListener(() -> logout());
         panel.add(logoutButton);
