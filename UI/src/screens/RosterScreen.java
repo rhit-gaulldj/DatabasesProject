@@ -81,23 +81,25 @@ public class RosterScreen extends Screen {
     private void updateTable() {
         ArrayList<JComponent[]> cells = new ArrayList<>();
 
-        int year = (int) yearField.getSelectedItem();
-        List<Athlete> results = athleteService.getRoster(year,
-                (Gender) genderField.getSelectedItem());
-        for (Athlete ath : results) {
-            LinkButton nameButton = new LinkButton(new Color(5, 138, 255),
-                    ath.firstName() + " " + ath.lastName(), 12);
-            nameButton.addActionListener(() -> {
-                ScreenOpenArgs args = new ScreenOpenArgs();
-                args.add("id", ath.id());
-                navHandler.navigate(ScreenTypes.AthleteView, args);
-            });
-            cells.add(new JComponent[]{
-                    nameButton,
-                    new JLabel(Integer.toString(year - ath.gradYear() + 13))
-            });
+        if (yearField.getSelectedItem() != null && genderField.getSelectedItem() != null) {
+            int year = (int) yearField.getSelectedItem();
+            List<Athlete> results = athleteService.getRoster(year,
+                    (Gender) genderField.getSelectedItem());
+            for (Athlete ath : results) {
+                LinkButton nameButton = new LinkButton(new Color(5, 138, 255),
+                        ath.firstName() + " " + ath.lastName(), 12);
+                nameButton.addActionListener(() -> {
+                    ScreenOpenArgs args = new ScreenOpenArgs();
+                    args.add("id", ath.id());
+                    navHandler.navigate(ScreenTypes.AthleteView, args);
+                });
+                cells.add(new JComponent[]{
+                        nameButton,
+                        new JLabel(Integer.toString(year - ath.gradYear() + 13))
+                });
+            }
+            table.setCells(cells);
         }
-        table.setCells(cells);
 
         getPanel().repaint();
         getPanel().revalidate();
