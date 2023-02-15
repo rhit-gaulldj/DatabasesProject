@@ -20,12 +20,14 @@ public class Main {
         // -- Splits must be handled
         // -- Grade should be used w/ year to calculate grad year for the athlete
         // -- Distance can be in miles or have a unit on it which means kilometers
-        try {
-            createCourseStatement();
-            createOthersStatement();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            createCourseStatement();
+//            createOthersStatement();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        NewGenerator gen = new NewGenerator();
+        gen.generate();
     }
     private static void createCourseStatement() throws IOException {
         File file = new File("PNXC Results_Course Data - Course IDs.csv");

@@ -1,7 +1,8 @@
 USE [TeamXCDB]
 GO
 
-CREATE PROCEDURE insert_athlete(@first_name nvarchar(200), @last_name nvarchar(200), @grad_year int, @gender char)
+ALTER PROCEDURE insert_athlete(@first_name nvarchar(200), @last_name nvarchar(200), @grad_year int, @gender char, 
+	@id int = null OUTPUT)
 AS
 BEGIN
 	IF (@first_name is null OR @last_name is null OR @grad_year is null OR @gender is null) BEGIN
@@ -21,4 +22,6 @@ BEGIN
 
 	INSERT INTO Athlete(first_name, last_name, grad_year, gender)
 		VALUES(@first_name, @last_name, @grad_year, @gender)
+
+	SELECT @id = @@IDENTITY
 END
