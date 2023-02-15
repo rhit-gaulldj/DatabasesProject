@@ -25,23 +25,8 @@ public class SearchService {
             ResultSet rs = stmt.executeQuery();
             List<SearchResult> result = new ArrayList<>();
             while (rs.next()) {
-                int intType;
-                String strType = rs.getString(2);
-                switch (strType) {
-                    case "Athlete":
-                        intType = SearchResult.ATHLETE;
-                        break;
-                    case "Course":
-                        intType = SearchResult.COURSE;
-                        break;
-                    case "Meet":
-                        intType = SearchResult.MEET;
-                        break;
-                    default:
-                        intType = -1;
-                        break;
-                }
-                result.add(new SearchResult(rs.getInt(1), rs.getString(3), intType));
+                result.add(new SearchResult(rs.getString(1), rs.getString(2), rs.getString(3),
+                    rs.getInt(4), rs.getString(5), rs.getInt(6), rs.getString(7), rs.getString(8)));
             }
             return result;
         } catch (SQLException e) {

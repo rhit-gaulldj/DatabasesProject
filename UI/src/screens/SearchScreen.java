@@ -69,7 +69,7 @@ public class SearchScreen extends Screen {
         parent.add(searchRow);
 
         tableScrollPane = new JScrollPane();
-        table = new ComponentTable(new String[]{"Name", "Type"});
+        table = new ComponentTable(new String[]{"Athlete", "Time", "Distance", "Meet", "Course", "Grade", "Splits"});
         tableScrollPane.setViewportView(table);
         parent.add(tableScrollPane);
     }
@@ -86,38 +86,14 @@ public class SearchScreen extends Screen {
         if (query.length() > 0) {
             List<SearchResult> results = searchService.search(query);
             for (SearchResult result : results) {
-                String typeName = switch (result.type()) {
-                    case SearchResult.ATHLETE -> "Athlete";
-                    case SearchResult.COURSE -> "Course";
-                    case SearchResult.MEET -> "Meet";
-                    default -> "Unknown";
-                };
-                ResultHighlightLabel nameLabel = new ResultHighlightLabel(result.name(), query);
-                switch (result.type()) {
-                    case SearchResult.ATHLETE:
-                        nameLabel.addActionListener(() -> {
-                            ScreenOpenArgs args = new ScreenOpenArgs();
-                            args.add("id", result.id());
-                            navHandler.navigate(ScreenTypes.AthleteView, args);
-                        });
-                        break;
-                    case SearchResult.COURSE:
-                        nameLabel.addActionListener(() -> {
-                            ScreenOpenArgs args = new ScreenOpenArgs();
-                            args.add("id", result.id());
-                            navHandler.navigate(ScreenTypes.CourseView, args);
-                        });
-                        break;
-                    case SearchResult.MEET:
-                        nameLabel.addActionListener(() -> {
-                            ScreenOpenArgs args = new ScreenOpenArgs();
-                            args.add("id", result.id());
-                            navHandler.navigate(ScreenTypes.MeetView, args);
-                        });
-                        break;
-                }
                 cells.add(new JComponent[]{
-                    nameLabel, new JLabel(typeName)
+                        new ResultHighlightLabel(result.athleteName(), query),
+                        new JLabel(result.time()),
+                        new JLabel(result.distance()),
+                        new ResultHighlightLabel(result.meetName() + " (" + result.meetYear() + ")", query),
+                        new ResultHighlightLabel(result.courseName(), query),
+                        new JLabel(Integer.toString(result.grade())),
+                        new JLabel(result.splits())
                 });
             }
         }

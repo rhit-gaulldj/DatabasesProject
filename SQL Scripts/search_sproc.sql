@@ -4,23 +4,18 @@ GO
 ALTER PROCEDURE perform_search(@Query nvarchar(200))
 AS
 BEGIN
-	-- Returns IDs of matching athletes, courses, and meets
-	-- Also returns the type of each result
+	-- Returns race results in which the names of the athlete/course/meet matches the provided query
 	IF (@Query is null) BEGIN
 		PRINT('Query must contain text')
 		RETURN 1
 	END
 
-	(SELECT athlete_id as Id, 'Athlete' as [Type], first_name + ' ' + last_name as [Name]
-	 FROM Athlete
-	 WHERE first_name like '%' + @Query + '%'
-			OR last_name like '%' + @Query + '%')
-	UNION
-	(SELECT course_id as Id, 'Course' as [Type], [name] as [Name]
-	 FROM Course
-	 WHERE [name] like '%' + @Query + '%')
-	UNION
-	(SELECT meet_id as Id, 'Meet' as [Type], [name] + ' (' + CAST([year] as varchar(5)) + ')' as [Name]
-	 FROM Meet
-	 WHERE [name] like '%' + @Query + '%')
+	SELECT TOP(100) Athlete, FormattedTime, Meet, [Year], c.[name] as Course,
+			Grade, Splits, CAST(distance as varchar(10)) + distance_unit AS Distance
+		FROM all_times_view atv
+		JOIN Course c ON c.course_id = atv.course_id
+		WHERE Athlete like '%' + @Query + '%' OR
+				(Meet + ' (' + CAST([Year] as varchar(5)) + ')') like '%' + @Query + '%' OR
+				c.[name] like '%' + @Query + '%'
+		ORDER BY atv.[time] ASC
 END
