@@ -96,7 +96,9 @@ public class CourseService extends AbstractDBService {
             ResultSet rs = stmt.executeQuery();
             List<DistancePair> result = new ArrayList<>();
             while (rs.next()) {
-                result.add(new DistancePair(rs.getDouble(1), rs.getString(2)));
+                double dist = rs.getDouble(1);
+                dist = Math.round(dist * 100) / 100.0;
+                result.add(new DistancePair(dist, rs.getString(2)));
             }
             DistancePair[] arr = new DistancePair[result.size()];
             result.toArray(arr);
