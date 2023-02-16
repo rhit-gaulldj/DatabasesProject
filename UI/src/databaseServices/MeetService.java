@@ -110,7 +110,7 @@ public class MeetService extends AbstractDBService {
             List<Race> result = new ArrayList<>();
             while (rs.next()) {
                 result.add(new Race(rs.getInt(1),
-                        new DistancePair(rs.getFloat(2), rs.getString(3)),
+                        new DistancePair(Math.round(100 * rs.getFloat(2)) / 100.0, rs.getString(3)),
                         new RaceLevel(rs.getInt(4), rs.getString(5)),
                         rs.getInt(6), Gender.fromString(rs.getString(7))));
             }
@@ -139,26 +139,6 @@ public class MeetService extends AbstractDBService {
                         rs.getString(5)));
             }
             RaceResult[] arr = new RaceResult[result.size()];
-            result.toArray(arr);
-            return arr;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public RaceLevel[] getUnusedLevelForMeet(int meetId) {
-        try {
-            CallableStatement stmt = dbService.getConnection()
-                    .prepareCall("{? = call get_unused_levels_for_meet(?)}");
-            stmt.registerOutParameter(1, Types.INTEGER);
-            stmt.setInt(2, meetId);
-            ResultSet rs = stmt.executeQuery();
-            ArrayList<RaceLevel> result = new ArrayList<>();
-            while (rs.next()) {
-                result.add(new RaceLevel(rs.getInt(1), rs.getString(2)));
-            }
-            RaceLevel[] arr = new RaceLevel[result.size()];
             result.toArray(arr);
             return arr;
         } catch (SQLException e) {
