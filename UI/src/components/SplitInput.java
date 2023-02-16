@@ -61,6 +61,10 @@ public class SplitInput extends JPanel {
         if (distanceField.getText().length() <= 0) {
             return null;
         }
+        final Pattern regEx = Pattern.compile("^\\d*[.]?\\d*$");
+        if (!regEx.matcher(distanceField.getText()).matches()) {
+            return null;
+        }
         DistancePair dist = new DistancePair(Float.parseFloat(distanceField.getText()),
                 unitsField.getSelectedItem().toString());
         return new Split(dist, timeField.getTime());

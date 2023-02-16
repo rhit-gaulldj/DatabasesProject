@@ -118,6 +118,11 @@ public class RaceCreateScreen extends Screen {
 
     private void submit() {
         String distText = distanceField.getText();
+        final Pattern regEx = Pattern.compile("^\\d*[.]?\\d*$");
+        if (!regEx.matcher(distText).matches()) {
+            JOptionPane.showMessageDialog(null, "Invalid race distance.");
+            return;
+        }
         if (distText.length() <= 0) {
             JOptionPane.showMessageDialog(null, "Race distance is required.");
             return;
@@ -146,9 +151,6 @@ public class RaceCreateScreen extends Screen {
     private void goBack() {
         ScreenOpenArgs args = new ScreenOpenArgs();
         args.add("id", meetId);
-//        args.add("name", meetName);
-//        args.add("year", meetYear);
-//        args.add("course_id", courseId);
         navHandler.navigate(ScreenTypes.MeetView, args);
     }
 

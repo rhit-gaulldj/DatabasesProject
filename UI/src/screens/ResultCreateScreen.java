@@ -121,7 +121,8 @@ public class ResultCreateScreen extends Screen {
         for (int i = 0; i < splitFields.size(); i++) {
             Split s = splitFields.get(i).getSplit();
             if (s == null || s.dist() == null || s.time() == null) {
-                JOptionPane.showMessageDialog(null, "Must fill in all splits");
+                JOptionPane.showMessageDialog(null, "Must fill in all splits, or have invalid inputs");
+                return;
             }
             splits.add(s);
         }
@@ -134,9 +135,6 @@ public class ResultCreateScreen extends Screen {
     private void goBack() {
         ScreenOpenArgs args = new ScreenOpenArgs();
         args.add("id", meetId);
-//        args.add("name", meetName);
-//        args.add("year", meetYear);
-//        args.add("course_id", courseId);
         navHandler.navigate(ScreenTypes.MeetView, args);
     }
 
