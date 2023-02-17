@@ -33,7 +33,7 @@ USE $(database_name)
 GO
 
 CREATE USER $(user_name)
-FOR LOGIN $(user_name)
+FOR LOGIN TeamXCDB
 -----------------------------------
 -------------PHASE 2---------------
 -----------------------------------
